@@ -1,0 +1,57 @@
+﻿@model CreateAuctionlotModel
+
+@{
+    ViewData["Title"] = "Создание аукционного лота";
+}
+
+<head>
+    <link rel="stylesheet" href="/css/CreateAuctionItem.css"/>
+</head>
+
+<body>
+    <div class="create_auction_content">
+        <div class="title_wrap_create_auction">
+            <span>Создание аукционного лота</span>
+        </div>
+        <div class="create_auction_container">
+            
+          
+            <form class="create_auction_form" asp-controller="Account" asp-action="CreateAuctionLot" method="post" enctype="multipart/form-data">
+                
+                <div class="auction_product_details_create_form">
+                    <input type="text" placeholder="Категория" class="select_auction_input" asp-for="Category">
+             
+                    <input type="text" placeholder="Название" class="title_auction_input" asp-for="Title">
+                    <textarea cols="30" rows="10" placeholder="Описание" class="desc_auction_input" asp-for="Description"></textarea>
+
+                    <div class="horizontal_input">
+                        <input type="text" placeholder="Местоположение" class="location_auction_input" asp-for="Location">
+                        <input type="text" placeholder="Текущая доходность" class="profit_auction_input" asp-for="AverageProfit">
+                    </div>
+
+                    <button type="submit" class="auction_create_form_btn">Создать</button>
+                </div>
+
+                <div class="auction_properties_create_form">
+                    <span>Параметры аукциона</span>
+
+                    <select asp-for="Type">
+                        <option>Английский</option>
+                        <option>Голландский</option>
+                    </select>
+
+                    
+                    <input type="file" name="прикрепить файлы" class="auction_file_btn" asp-for="Image" asp-page-handler="Upload">
+                   
+
+                    <input type="text" id="" placeholder="Начальная цена" class="auction_start_price_input" asp-for="StartPrice">
+                    <input type="text" id="" placeholder="Конечная цена" class="auction_end_price_input" asp-for="EndPrice">
+                    
+                </div>
+                
+            </form>
+            
+        </div>
+    </div>
+
+</body>

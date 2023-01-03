@@ -1,0 +1,215 @@
+﻿@model AuctionLotModel
+@using System;
+
+@{
+    ViewData["Title"] = Model.AuctionLot.Title;
+}
+<link rel="stylesheet" href="~/css/AuctionItemStyle.css"/>
+
+<head>
+    <script src="/lib/jquery/dist/jquery.js"></script>
+</head>
+
+<body>
+
+    <header class="auction_content">
+        <div class="auction_header">
+            <div class="prop_auction">
+                <img src="./img/image4.svg" alt="" class="auction_img">
+
+                <div class="wrap_prop">
+                    <div class="wrap_status">
+                        <span class="auction_status">@Model.AuctionLot.Status</span>
+                    </div>
+                    <div class="auction_title">@Model.AuctionLot.Title</div>
+                    <div class="auction_city">@Model.AuctionLot.Location</div>
+
+                    <div class="wrap_payback">
+                        <span>Окупаемость: </span>
+                        <span id="auction_payback_time">@Model.AuctionLot.PaybackTime</span>
+                    </div>
+
+                    <div class="wrap_profit">
+                        <span>Предполагаемая доходность: </span>
+                        <span id="auction_profit_time">@Model.AuctionLot.AverageProfit</span>
+                    </div>
+                </div>
+
+
+                <div class="wrap_contols">
+                    <!-- spinner start code -->
+                    <div class="auction_spinner">
+                        <div class="circle">
+                            <div class="outer"></div>
+                            <div class="inner">
+                                <div class="spinner_content">
+
+                                    <span id="remained_time">
+                                        @{
+                                            var d = DateTime.Now.Date;
+                                            var startDate = Model.AuctionLot.StartDate;
+                                            var result = startDate.DayNumber - DateOnly.FromDateTime(d).DayNumber;
+                                        }
+                                        @if(result > 0)
+                                        {
+                                            @result 
+                                        }
+                                        
+                                    </span>
+                                    <span class="status">
+                                        @if(Model.AuctionLot.Status == "На проверке")
+                                        {
+                                            <span>до начала аукциона</span>
+                                        }
+                                        else
+                                        {
+                                            if(Model.AuctionLot.Status == "Идёт аукцион")
+                                            {
+                                                if (Model.LastBid != null)
+                                                {
+                                                    var lastBid = Model.LastBid.Price;
+                                                    <span>текущая ставка:</span>
+                                                    <span>@lastBid</span>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <span>Победитель:</span>
+                                                <a asp-controller="Account" asp-action="GetUserProfile" asp-route-idUser=@Model.AuctionLot.Winner>id: @Model.AuctionLot.Winner</a>
+                                            }
+                                        }
+
+                                    </span>
+
+                                    <span class="auctioneer">
+                                        <a asp-controller="Account" asp-action="GetUserProfile" asp-route-idUser=@Model.AuctionLot.IdAuctioneer>Автор:@Model.AuctionLot.IdAuctioneer</a>
+                                    </span>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="wrap_bid_button">
+                        <button class="bid_button">
+                            @if(Model.AuctionLot.Status == "Идёт аукцион" && @Model.IdProfile != Model.AuctionLot.IdAuctioneer)
+                            {
+                                <span id="bid_btn">Сделать ставку</span>
+                            }
+                            else if(@Model.IdProfile != Model.AuctionLot.IdAuctioneer)
+                            {
+                                <span id="remained_time_to_bid">Скоро</span>                                
+                            }
+
+                        </button>
+
+                    </div>
+                    @if(@Model.IdProfile != Model.AuctionLot.IdAuctioneer){
+                        <div class="auction_follow_wrap"><a href="#">Отслеживать</a></div>
+                    }
+                    
+                </div>
+
+
+            </div>
+        </div>
+    </header>
+    <!-- auction header content end code -->
+
+    <div class="wrap_container_auction_item">
+        <div class="container_auction_item">
+            <div class="auction_item_content">
+                <nav class="nav_auction_item_params">
+
+                    <div class="nav_option_auction_item_params">
+                        <span id="auction_desc_btn">Описание</span>
+                        <hr class="underline_nav_option">
+                    </div>
+
+                    <div class="nav_option_auction_item_params">
+                        <span id="auction_contains_btn">Содержание</span>
+                        <hr class="underline_nav_option">
+                    </div>
+
+                    <div class="nav_option_auction_item_params">
+                        <span id="auction_about_btn">Об аукционе</span>
+                        <hr class="underline_nav_option">
+                    </div>
+                </nav>
+
+                <div class="auction_item_params_content">
+
+                    <div class="description_auction_item">
+                        <span>
+                            @Model.AuctionLot.Description
+                        </span>
+                    </div>
+
+                    <div class="contains_file_auction_item">
+                        <span>Скачивание будет доступно после завершения аукциона</span>
+                        <div class="wrap_contains_file">
+                            <img src="" alt=".pdf">
+                            <span>презентация партнёрам в PDF</span>
+                        </div>
+                    </div>
+
+                    <div class="about_auction_item">
+                        <span>Лот: №@Model.AuctionLot.IdLot @Model.AuctionLot.Category @Model.AuctionLot.Title”</span>
+                        <span>Аукционист:<a asp-controller="Account" asp-action="GetProfileUser" asp-route-idUser="@Model.AuctionLot.IdAuctioneer"></a>@Model.AuctionLot.IdAuctioneer</span>
+                        <span>Начальная цена лота: @Model.AuctionLot.StartPrice. </span>
+
+                        @if(@Model.AuctionLot.Status != "Идёт аукцион")
+                        {
+                            <span>Начало торгов: сегодня в 18:30</span>
+                        }
+                        else
+                        {
+                            <span>До окончания: @{
+                                    var res = @Model.AuctionLot.EndDate.DayNumber - DateOnly.FromDateTime(DateTime.Now).DayNumber;
+                                }
+                                @res дней</span>
+                        }
+                        
+                        <span>Вид аукциона: @Model.AuctionLot.Type аукцион</span>
+
+                        
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    @if(@Model.IdProfile > 0 && Model.IdProfile != Model.AuctionLot.IdAuctioneer)
+    {
+        <div class="wrap_modal">
+            <form action="" method="post" class="auction_bid_form">
+                <span class="confirm_id_auction">ID аукциона: @Model.AuctionLot.IdLot</span>
+                <span class="confirm_title_auction">"@Model.AuctionLot.Title"</span>
+
+                @{
+                    var amount = "";
+                }
+                <input type="number" placeholder="Сумма ставки" asp-for=@amount>
+                <span class="available_money">Доступно: @Model.Wallet.Balance р.</span>
+
+                <div class="auction_bid_form_btns">
+                    <button type="button" id="cancel_bid_btn">Отменить</button>
+
+                    @{
+                        var idUser = Model.Wallet.IdUser;
+                        var idLot = Model.AuctionLot.IdLot;
+                    }
+
+                    <button type="submit" id="submit_bid_btn" asp-controller="Account" asp-action="Bid" asp-route-idUser=@idUser asp-route-idLot=@idLot asp-route-amount=@amount>Подтвердить</button>
+                </div>
+            </form>
+        </div>
+    }
+   
+
+</body>
+
+<script src="/js/auctionItem.js"></script>
+
+

@@ -1,0 +1,98 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - UnickProject</title>  
+    <link rel="stylesheet" href="~/css/style.css" />
+</head>
+<body>
+
+    <header>
+        <nav class="navbar">
+            <div class="container">
+                <a class="navbar_brand" asp-controller="Home" asp-action="Index">Unick</a>
+
+                <div class="navbar_wrap">
+                    <ul class="navbar_menu">
+
+                        <li><a asp-controller="Account" asp-action="GetTrandAuctionItems">Подборки</a></li>
+                        <li>@Html.ActionLink("Интересное","RecomendationAuctions")</li>
+                        <li>@Html.ActionLink("Категории","CategoryAuctions")</li>
+                        <li>@Html.ActionLink("Стандарты","StandartAuctions")</li>
+                        <li>@Html.ActionLink("Поддержка","Support")</li>
+      
+                    </ul>
+                </div>
+
+                <div class="container_account">
+                    <img src="./img/ei_search.svg" alt="" srcset="">
+                    <a id="my_account_btn" asp-controller="Account" asp-action="LoginWithCookies">MyUnick</a>
+                    <div class="notify_wrap"></div>
+                </div>
+
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer>
+        <table>
+            <tbody>
+                <tr>
+                    <td rowspan="7"><a class="navbar_brand" asp-controller="Home" asp-action="Index">Unick</a></td>
+                    <td><span>О нас</span></td>
+                    <td><span>Поиск идеи</span></td>
+                    <td><span>Аукционы</span></td>
+                    <td><span>Помощь</span></td>
+                    <td><span>Контакты</span></td>
+                </tr>
+                <tr>
+                    <td><a href="#">Стандарты</a></td>
+                    <td><a href="#">Список лотов</a></td>
+                    <td><a href="#">Сегодняшние лоты</a></td>
+                    <td><a href="#">Поддержка</a></td>
+                    <td><a href="#">VK</a></td>
+                </tr>
+                <tr>
+                    <td><a href="#">Новости</a></td>
+                    <td><a href="#">Список отслеживаемых</a></td>
+                    <td><a href="#">Участвовать в аукционе</a></td>
+                    <td><a href="#">Как покупать</a></td>
+                    <td><a href="#">Instagram</a></td>
+                </tr>
+                <tr>
+                    <td><a href="#">Отзывы</a></td>
+                    <td><a href="#">Любимые теги</a></td>
+                    <td><a href="#">Бизнес лоты</a></td>
+                    <td><a href="#">Популярные вопросы</a></td>
+                    <td><a href="#">TikTok</a></td>
+                </tr>
+                <tr>
+                    <td><a href="#">Сообщество</a></td>
+                    <td><a href="#">Оповещения</a></td>
+                    <td></td>
+                    <td><a href="#">Словарь терминов</a></td>
+                </tr>
+                <tr>
+                    <td><a href="#">Вакансии</a></td>
+                </tr>
+                <tr>
+                    <td><a href="#">Инвесторам</a></td>
+                </tr>
+            </tbody>
+        </table>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+@*    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+*@    <script src="~/js/site.js" asp-append-version="true"></script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

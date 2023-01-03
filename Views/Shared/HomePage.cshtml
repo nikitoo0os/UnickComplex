@@ -1,0 +1,40 @@
+﻿@{
+    ViewData["Title"] = "Unick";
+}
+
+<body>
+    <div class="greetings">
+        <div class="greetings_content">
+            <div class="greetings_content_text">
+                <h1>Интернет-аукцион готовых бизнесов</h1>
+                <h2>Находите и продавайте. Unick предоставляет большое количество уникальных аукционных лотов. Делайте ставки круглосуточно</h2>
+                <h2>Начни работать вместе с нами</h2>
+                <a id="join_btn" asp-controller="Home" asp-action="Registration"><button>Присоединиться</button> </a>
+            </div>
+            <img src="./img/game-icons_cubes.svg" alt="">
+        </div>
+    </div>
+
+    @*banner*@
+    <div class="banner">
+        <div class="container">
+            <a href="#"><img src="./img/akar-icons_chevron-left.svg" alt="" id="left_button_banner"></a>
+
+            <div class="banner_content">
+                <div class="title_banner">
+                    <img src="./img/Vector.svg" alt="" class="logo_crowdfunding">
+                    <span>Краудфандинговая платформа Unick</span>
+                </div>
+
+                <div class="body_banner">
+                    <h2>Авторы уникальных идей и разработок могут собрать денежные средства на реализацию проекта</h2>
+                    <h2>Наша система поможет вам оценить востребованность идеи. Участники же делают вклад и получают вознаграждение</h2>
+                </div>
+
+                <button id="join_btn"><a asp-controller="Home" asp-action="Registration">Присоединиться</a></button>
+            </div>
+
+            <a href="#"><img src="./img/akar-icons_chevron-left.svg" alt="" id="right_button_banner"></a>
+        </div>
+    </div>
+</body>

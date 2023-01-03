@@ -1,0 +1,41 @@
+﻿@model AdminPanelModel
+@{
+    ViewData["Title"] = "Панель управления";
+}
+<head>
+    <link rel="stylesheet" href="/css/AuctionItemStyle.css">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+    <div class="admin_content">
+        <div class="wrap_title_admin">
+            <span>Добро пожаловать, @Model.User.FirstName</span>
+        </div>
+
+        <div class="wrap_admin_auction_items">
+
+            @foreach(var lot in Model.AuctionLots)
+            {
+                <div class="wrap_user_auction_item">
+                    <div class="container_auction_item">
+                        <div class="wrap_status">
+                            <span>@lot.Status</span>
+                        </div>
+                        <span class="title_auction_item">
+                            @lot.Title
+                        </span>
+                        <span class="last_edit_time">
+                            Последнее изменение: вчера
+                        </span>
+                    </div>
+                    <a asp-controller="Account" asp-action="AdminGetAuctionItem" asp-route-idLot=@lot.IdLot class="go_btn"><img src="/img/Vector1.svg" alt=""></a>
+                </div>
+            }
+           
+        </div>
+
+    </div>
+
+
+</body>

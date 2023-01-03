@@ -1,0 +1,30 @@
+﻿@model RegisterViewModel
+@{
+    ViewData["Title"] = "Регистрация";
+}
+<link rel="stylesheet" href="/css/AuthPageStyle.css" />
+
+<div class="wrap__auth">
+    <div class="auth_header">
+        <span>Регистрация</span>
+    </div>
+    <div class="wrap_err">
+        <span>Пользователь с таким логином уже существует</span>
+    </div>
+    
+    <form method="post" class="auth_form" asp-controller="Account" asp-action="Create">
+        <input type="text" placeholder="Имя" asp-for="FirstName" required>
+        <input type="text" placeholder="Фамилия" id="el-email" asp-for="SecondName" required>
+        <input type="text" placeholder="Логин" id="el-login" asp-for="Login" required>
+        <input type="password" placeholder="Пароль" id="el-pass" asp-for="Password"  required>
+        <input type="password" placeholder="Подтверждение пароля" id="el-pass1" required>
+        <button type="submit" id="el-btn">Зарегистрироваться</button>
+    </form>
+
+    <div class="auth_footer">
+        <span>Уже есть аккаунт?</span>
+        <a asp-controller="Home" asp-action="Login">Войти</a>
+    </div>
+
+</div>
+

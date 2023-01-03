@@ -1,0 +1,80 @@
+﻿@model TrandAuctionItemsModel
+
+@{
+    ViewData["Title"] = "Подборка";
+}
+<head>
+    <link rel="stylesheet" href="/css/TrandAuctionItemsStyle.css">
+</head>
+<body>
+    <div class="wrap_content_unickum_page">
+        <div class="unickum_page_content">
+            <header>
+                <div class="title_unickum_page">
+                    <span>Уникальная подборка</span>
+                </div>
+                <div class="favourite_tags">
+                    <span>избранные теги: #строительство #монтаж #электромонтаж #отделка #сваи</span>
+                </div>
+            </header>
+
+            @foreach(var auctionLot in Model.TrandAuctionLots)
+            {
+                if(auctionLot.EndDate.DayNumber >= DateOnly.FromDateTime(DateTime.Now).DayNumber)
+                {
+                    <div class="wrap_container_unickum_page">
+                        <div class="container_unickum_page">
+                            <div class="wrap_auction_item_unickum_page">
+                                <div class="content_auction_item_unickum_page">
+
+                                    <div class="image_content_auction_item_unickum_page">
+                                        <img src="" alt="Тут должна быть картинка">
+                                    </div>
+
+                                    <div class="title_content_auction_item_unickum_page">
+                                        <span>@auctionLot.Title</span>
+                                    </div>
+
+                                    <div class="wrap_about_content_auction_item_unickum_page">
+                                        <div class="about_content_auction_item_unickum_page">
+                                            <span>Начальная цена: @auctionLot.StartPrice руб</span>
+                                            <a asp-controller="Account" asp-action="GetUserProfile" asp-route-idUser=@auctionLot.IdAuctioneer>@auctionLot.IdAuctioneer</a>
+                                        </div>
+
+                                        <button><a asp-controller="Account" asp-action="GetAuctionItem" asp-route-id=@auctionLot.IdLot style="color:white">Подробнее</a></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+                else
+                {
+
+
+                    
+                    auctionLot.Status = "Завершено";
+                }
+                
+            }
+            
+
+            <footer>
+                <div class="pagination_content">
+                    <div class="wrap_pagination">
+                        <a href="">1</a>
+                    </div>
+                    <div class="wrap_pagination">
+                        <a href="">2</a>
+                    </div>
+                    <div class="wrap_pagination">
+                        <a href="">3</a>
+                    </div>
+                    <div class="wrap_pagination">
+                        <a href="">дальше</a>
+                    </div>
+                </div>
+            </footer>
+        </>
+    </div>
+</body>

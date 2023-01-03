@@ -1,0 +1,29 @@
+﻿@model LoginViewModel;
+
+@{
+    ViewData["Title"] = "Авторизация";
+}
+
+<link rel="stylesheet" href="/css/LoginPageStyle.css" />
+
+<div class="wrap_login_auth">
+
+    <div class="login_auth_header">
+        <span>Авторизация</span>
+    </div>
+
+    <form class="login_form" asp-controller="Account" asp-action="Login">
+        <input type="text" placeholder="Логин" id="el-login" asp-for="Login" required>
+        <input type="password" placeholder="Пароль" id="el-pass" asp-for="Password" required>
+        <button type="submit" id="el-btn">Войти</button>
+    </form>
+
+    <div class="login_auth_footer">
+        <span>Забыли пароль?</span>
+        <a href="#">Восстановить</a>
+    </div>
+    <div class="register_footer">
+        <a asp-controller="Home" asp-action="Registration">Регистрация</a>
+    </div>
+
+</div>

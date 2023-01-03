@@ -1,0 +1,263 @@
+﻿@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;600;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    font-family: 'Open Sans', sans-serif;
+}
+
+li {
+    list-style-type: none;
+}
+
+a {
+    text-decoration: none;
+    color: black;
+}
+
+body {
+    background-color: #f5f5f5;
+}
+
+.navbar {
+    width: 100%;
+    height: 50px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    background-color: #ffffff;
+}
+
+    .navbar .container {
+        height: inherit;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+.navbar_menu {
+    list-style-type: none;
+    padding-left: 0;
+    margin-bottom: 0;
+}
+
+    .navbar_menu li {
+        font-size: 13px;
+    }
+
+    .navbar_menu li {
+        display: inline-block;
+        margin-left: 2rem;
+    }
+
+        .navbar_menu li a {
+            display: inline-block;
+        }
+
+.navbar_brand {
+    margin-left: 15%;
+    font-size: 20px;
+    font-weight: 300;
+}
+
+.container_account {
+    margin-right: 15%;
+    display: flex;
+    align-items: center;
+}
+
+    .container_account img {
+        height: 21px;
+        margin-right: 1rem;
+        cursor: pointer;
+    }
+    .container_account a{
+        font-size: 14px;
+        font-weight: 300;
+    } 
+
+.notify_wrap {
+    display: none;
+    margin-bottom: 15%;
+    border: 3.5px solid rgba(209, 38, 38, 1);
+    border-radius: 100%;
+}
+
+
+/*.greetings container */
+.greetings {
+    display: inline-block;
+    background-color: transparent;
+    height: 500px;
+    width: 100%;
+    font-weight: 300;
+    margin-top: 7%;
+}
+
+    .greetings h1, h2 {
+        font-family: 'Open Sans', sans-serif;
+        font-weight: 300;
+    }
+
+    .greetings h1 {
+        font-size: 38px;
+    }
+
+    .greetings h2 {
+        font-size: 20px;
+    }
+
+.greetings_content {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.greetings_content_text {
+    display: grid;
+    grid-template-rows: 8rem 9rem 3rem;
+    width: 490px;
+    margin-left: 15%;
+}
+
+    .greetings_content_text button {
+        padding: 0;
+        border: none;
+        background-color: rgba(0, 0, 0, 0.8);
+        border-radius: 7px;
+        width: 150px;
+        height: 40px;
+    }
+
+        .greetings_content_text button{
+            color: white;
+            font-family: 'Open Sans', sans-serif;
+            font-weight: 300;
+            cursor: pointer;
+        }
+
+.greetings_content img {
+    margin-right: 15%;
+    width: 400px;
+}
+
+.banner {
+    background-color: rgba(0, 0, 0, 0.8);
+    width: 100%;
+    height: 250px;
+    font-weight: 300;
+    color: white;
+    padding: 30px 0 30px 0;
+}
+
+    .banner .container {
+        display: flex;
+        justify-content: space-around;
+    }
+
+#left_button_banner {
+    width: 30px;
+    position: absolute;
+    float: left;
+    margin-top: 6rem;
+}
+
+#right_button_banner {
+    width: 30px;
+    transform: rotate(-180deg);
+    float: right;
+    margin-top: 6rem;
+}
+
+.banner button {
+    padding: 0;
+    border: none;
+    background-color: rgba(244, 244, 244, 1);
+    border-radius: 5px;
+    width: 140px;
+    height: 35px;
+    margin-top: 4%;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.logo_crowdfunding {
+    width: 40px;
+}
+
+.title_banner {
+    display: flex;
+}
+
+.body_banner {
+    margin-top: 3%;
+    line-height: 30px;
+}
+
+.banner_content {
+    margin-left: 15%;
+    margin-right: 15%;
+}
+
+    .banner_content span {
+        font-size: 24px;
+        font-weight: 300;
+        margin-left: 1.5%;
+    }
+
+    .banner_content h2 {
+        font-size: 18px;
+        font-weight: 300;
+    }
+
+
+/* admin auction panel start code */
+.admin_content {
+    padding-left: 15%;
+    padding-right: 15%;
+    padding-top: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.wrap_title_admin {
+    font-size: 21px;
+    font-weight: 300;
+}
+
+.wrap_admin_auction_items {
+    margin-top: 2rem;
+}
+/* admin auction panel end code */
+ 
+
+
+
+
+
+
+
+
+
+  
+footer {
+    padding: 15px 0 15px 0;
+    background-color: white;
+}
+footer td{
+    font-size: 13px;
+}
+
+table {
+    margin-left: 15%;
+    margin-right: 15%;
+    font-size: 14px;
+}
+
+td {
+    width: 1%;
+    height: 21px;
+}
+
+footer table span {
+    font-weight: 600;
+}

@@ -1,0 +1,32 @@
+@model User
+@{
+    ViewData["Title"] = "Редактирование профиля";
+}
+
+<head>
+    <link rel="stylesheet" href="/css/EditProfileStyle.css"/>
+    <link rel="stylesheet" href="/css/LoginPageStyle.css" />
+</head>
+
+<body>
+    <div class="container_edit_profile_content">
+        <div class="title_wrap_edit_profile">
+            <span>Редактирование профиля</span>
+        </div>
+        <div class="wrap_edit_profile_content">
+
+            <form method="post" class="edit_profile_form" asp-controller="Account" asp-action="Edit">
+                <input type="text" placeholder="Фамилия" value=@Model.SecondName asp-for="SecondName" required>
+                <input type="text" placeholder="Имя" value=@Model.FirstName asp-for="FirstName" required>
+                <input type="date" value="2011-11-11" asp-for="DateOfBirth" required>
+                <div class="edit_profile_btns">
+                    <a><button type="submit">Изменить</button></a>
+                    <a href="#" class="edit_profile_form_changepass_btn">Сменить пароль</a>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+</body>

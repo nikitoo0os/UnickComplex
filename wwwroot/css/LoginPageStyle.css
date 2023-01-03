@@ -1,0 +1,77 @@
+﻿/* auth form start code */
+input {
+    width: 272px;
+    height: 35px;
+    border-radius: 5px;
+    border: none;
+    padding-left: 10px;
+}
+
+.login_auth_header {
+    text-align: center;
+    font-size: 22px;
+}
+
+.wrap_login_auth {
+    width: 400px;
+    height: 310px;
+    background-color: rgba(217, 217, 217, 0.623);
+    border-radius: 10px;
+    padding-top: 40px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 7%;
+    margin-bottom: 7%;
+}
+
+.login_auth_header a {
+    margin-left: 5%;
+}
+
+    .login_auth_header a img {
+        width: 10px;
+    }
+
+.login_form {
+    padding-left: 15%;
+    padding-right: 15%;
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#el-login {
+    margin-top: 20px;
+}
+
+#el-pass {
+    margin-top: 20px;
+}
+
+#el-btn {
+    margin-top: 45px;
+    width: 90px;
+    cursor: pointer;
+    height: 30px;
+    border-radius: 5px;
+    border: none;
+    padding-left: 10px;
+    padding-right: 10px;
+    background-color: white;
+}
+
+.login_auth_footer, .register_footer {
+    text-align: center;
+    margin-top: 3%;
+    font-size: 13px;
+}
+
+    .login_auth_footer a, .register_footer a {
+        color: rgba(42, 27, 209, 1);
+    }
+
+.register_footer {
+    margin-top: 1%;
+}
+/* login auth form end code */

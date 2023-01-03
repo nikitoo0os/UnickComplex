@@ -1,0 +1,111 @@
+﻿@using Microsoft.EntityFrameworkCore;
+@model ProfileViewModel
+
+@{
+    ViewData["Title"] = "Профиль";
+}
+<head>
+    <link rel="stylesheet" href="/css/ProfileStyle.css"/>
+</head>
+
+<body>
+    <div class="my_account_wrap">
+    <div class="header_profile">
+
+        <div class="profile_wrap">
+            <div class="avatar_img">
+                <img src="" alt="Ава">
+            </div>
+            <div class="info_account">
+
+                <span class="full_name">
+                        @Html.DisplayFor(m => m.User.FirstName)
+                <span> </span>
+                        @Html.DisplayFor(m => m.User.SecondName)
+                </span>
+                <span class="login">
+                        @Html.DisplayFor(m => m.User.Login)
+                </span>
+                <span class="date_of_reg">
+                    Дата регистрации: @Html.DisplayFor(m=> m.User.DateOfRegistration)
+                </span>
+            </div>
+        </div>
+            @if(Model.IdProfile == Model.User.IdUser)
+            {
+                <div class="wrap_btns">
+                    <div class="btn_edit_profile">
+                        <a asp-controller="Account" asp-action="EditAccountProfile">Редактировать</a>
+                    </div>
+                    <div class="btn_logout_profile">
+                        <a asp-controller="Account" asp-action="Logout">Выход</a>
+                    </div>
+                </div>
+            }
+            
+    </div>
+
+        <div class="wrap_user_wallet">
+            <div class="container_user_wallet">
+                <div class="info_user_wallet">
+                    <span class="balance_user_wallet">Баланс: @Model.Wallet.Balance р.</span>
+                    <span class="last_transaction_user_wallet">Последняя транзакция: вчера</span>
+                </div>
+                <a href="#"><img src="/img/Vector1.svg" alt=""></a>
+            </div>
+        </div>
+
+    <div class="title_wrap_user_auction_items">
+            @{
+                if(Model.IdProfile == Model.User.IdUser)
+                {
+                    <span>Мои аукционные лоты</span>
+                }
+                else
+                {
+                    <span>Аукционные лоты</span>
+                }
+            }
+    </div>
+    <div class="profile_container">
+
+        <div class="user_auction_items">
+                @{
+                        foreach (var auctionItem in Model.AuctionLot)
+                        {
+                            <div class="wrap_user_auction_item">
+                                <div class="container_auction_item">
+                                    <div class="wrap_status">
+
+                                        <span>@auctionItem.Status</span>
+
+
+                                    </div>
+                                    <span class="title_auction_item">
+                                        @auctionItem.Title
+                                    </span>
+                                    <span class="last_edit_time">
+                                        Последнее изменение: вчера
+                                    </span>
+                                </div>
+                                <a asp-controller="Account" asp-action="GetAuctionItem" asp-route-id=@auctionItem.IdLot class="go_btn"><img src="/img/Vector1.svg" alt=""></a>
+                            </div>
+                        }
+                    }            
+                @{
+                    if(Model.IdProfile == Model.User.IdUser)
+                    {
+                        <div class="wrap_create_auction_item_btn">
+                            <a asp-area="Account" asp-action="CreateAuctionItem">+</a>
+                        </div>
+                    }
+                }
+            
+        </div>
+
+
+    </div>
+
+</div>
+</body>
+

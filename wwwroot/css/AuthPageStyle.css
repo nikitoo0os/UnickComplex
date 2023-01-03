@@ -1,0 +1,99 @@
+﻿/* auth form start code */
+input {
+    width: 272px;
+    height: 35px;
+    border-radius: 5px;
+    border: none;
+    padding-left: 10px;
+}
+button{
+    border: none;
+}
+.auth_header{
+    text-align: center;
+}
+.auth_header span {
+    font-size: 22px;
+}
+
+.wrap_err{
+    width: inherit;
+    font-size: 14px;
+    text-align: center;
+    margin-top: 2%;
+}
+
+.wrap__auth {
+    width: 400px;
+    height: 485px;
+    background-color: rgba(217, 217, 217, 0.623);
+    border-radius: 10px;
+    padding-top: 40px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 4%;
+    margin-bottom: 4%;
+    left: 0;
+    right: 0;
+}
+auth_header{
+    text-align: center;
+}
+
+
+    .auth_header a {
+        margin-left: 5%;
+    }
+
+    .auth_header a img {
+        width: 10px;
+    }
+
+.auth_form {
+    padding-left: 15%;
+    padding-right: 15%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 10%
+}
+
+#el-email {
+    margin-top: 20px;
+}
+
+#el-login {
+    margin-top: 20px;
+}
+
+#el-pass {
+    margin-top: 20px;
+}
+
+#el-pass1 {
+    margin-top: 20px;
+}
+
+#el-btn {
+    margin-top: 30px;
+    width: 150px;
+    cursor: pointer;
+    height: 35px;
+    border-radius: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    background-color: white;
+}
+
+.auth_footer {
+    text-align: center;
+    margin-top: 3%;
+    font-size: 13px;
+}
+
+    .auth_footer a {
+        color: rgba(42, 27, 209, 1);
+    }
+
+
+/* auth form end code */
