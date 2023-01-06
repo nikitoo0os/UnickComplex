@@ -34,11 +34,20 @@
             @if(Model.IdProfile == Model.User.IdUser)
             {
                 <div class="wrap_btns">
+                    <a asp-controller="Account" asp-action="MyMessages">Мои сообщения</a>
                     <div class="btn_edit_profile">
                         <a asp-controller="Account" asp-action="EditAccountProfile">Редактировать</a>
                     </div>
                     <div class="btn_logout_profile">
                         <a asp-controller="Account" asp-action="Logout">Выход</a>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="wrap_btns">
+                    <div class="btn_edit_profile">
+                        <a asp-controller="Account" asp-action="NewMessage" asp-route-idUser="@Model.IdProfile">Написать сообщение</a>
                     </div>
                 </div>
             }

@@ -249,6 +249,7 @@ namespace ComplexProject.Controllers
         public async Task<IActionResult> LoginWithCookies()
         {
             int id = Convert.ToInt32(HttpContext.Request.Cookies["Unick_User_ID"]);
+            HttpContext.Session.SetInt32("idUser", id);
             var token = HttpContext.Request.Cookies["Unick_User_Token"];
             var access = HttpContext.Request.Cookies["Unick_Auth_User"];
 
@@ -303,15 +304,23 @@ namespace ComplexProject.Controllers
             if (model.Login != null && model.Password != null)
             {
                 userSession = await _context.Users
-               .FirstOrDefaultAsync(m => m.Login == model.Login);
+                    .FirstOrDefaultAsync(m => m.Login == model.Login);
 
-                if (userSession.Role == "admin")
+                try
                 {
-                    return View("AdminPanel", new AdminPanelModel()
+                    if (userSession.Role == "admin")
                     {
-                        User = userSession,
-                        AuctionLots = _context.Auctionlots.Where(m => m.Status == "На проверке")
-                    });
+                        HttpContext.Session.SetInt32("idUser", userSession.IdUser);
+                        return View("AdminPanel", new AdminPanelModel()
+                        {
+                            User = userSession,
+                            AuctionLots = _context.Auctionlots.Where(m => m.Status == "На проверке")
+                        });
+                    }
+                }
+                catch
+                {
+                    return View("AuthPageErr");
                 }
 
                 var wallet1 = await _context.Wallets
@@ -326,6 +335,8 @@ namespace ComplexProject.Controllers
 
                     CreateCookie("Unick_User_ID", userSession.IdUser.ToString());
                     CreateCookie("Unick_Auth_User", "True");
+
+                    HttpContext.Session.SetInt32("idUser", userSession.IdUser);
 
                     return View("Profile", new ProfileViewModel()
                     {
@@ -345,6 +356,8 @@ namespace ComplexProject.Controllers
         {
             DeleteCookie("Unick_User_ID");
             DeleteCookie("Unick_Auth_User");
+            HttpContext.Session.Clear();
+
 
             return Redirect("/");
         }
@@ -712,6 +725,59 @@ namespace ComplexProject.Controllers
                 TrandAuctionLots = lots
             });
         }
+
+
+        public async Task<IActionResult> MyMessages()
+        {
+            int idUser = HttpContext.Session.GetInt32("idUser") ?? 0;
+
+            if(idUser != 0)
+            {
+                var userConversations = _context.Conversations
+                    .Where(m => m.IdUser == idUser)
+                    .OrderByDescending(m => m.IdConversation);
+
+                ConversationsModel convModel = new ConversationsModel();
+                convModel.Conversations = userConversations;
+
+                foreach(var conv in userConversations)
+                {
+                    var user = await _context.Users
+                        .FirstOrDefaultAsync(m => m.IdUser == conv.IdUser);
+
+                    string fullName = user.FirstName + " " + user.SecondName;
+
+                    convModel.personConversation.Add(idUser, fullName);
+                }
+
+                return View("ConversationList", convModel);
+            }
+
+            return View("ConversationList");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> NewMessage(int idUser)
+        {
+            int idSender = HttpContext.Session.GetInt32("IdUser") ?? 0;
+
+            ConversationModel convModel = new ConversationModel();
+
+            convModel.UserSender = await _context.Users
+                .FirstOrDefaultAsync(m => m.IdUser == idSender);
+
+            convModel.UserReceiver = await _context.Users
+                .FirstOrDefaultAsync(m => m.IdUser == idUser);
+
+            var conv = await _context.Conversations
+                .FirstOrDefaultAsync(m => m.IdUser1 == idUser && m.IdUser == idSender);
+
+            convModel.Messages = _context.Messages
+                .Where(m => m.IdConversation == conv.IdConversation);
+
+            return View("Conversation", convModel);
+        }
+
 
         private async Task TransferMoney(decimal amount, string idSender, int idReceiver)
         {

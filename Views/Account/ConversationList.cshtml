@@ -1,0 +1,52 @@
+﻿@model ConversationsModel
+
+@{
+    ViewData["Title"] = "Диалоги";
+}
+
+<head>
+    <link rel="stylesheet" href="./css/ConversationListStyle.css">
+</head>
+
+<body class="conversation_list">
+
+    <header class="conversation_list">
+        <span>Диалоги</span>
+    </header>
+
+    <div class="conversation_list_content">
+
+        @foreach(var conv in Model.Conversations)
+        {
+            <div class="wrap_chat">
+                <div class="container_wrap_chat">
+                    <div class="wrap_info_chat">
+
+                        <div class="profile_image">
+                            <img src="" alt="">
+                        </div>
+
+                        <div class="message_info_chat">
+                            <span>@Model.personConversation[conv.IdUser]</span>
+
+                            <div class="wrap_last_msg">
+                                <div class="wrap_notify_msg">
+                                    1
+                                </div>
+                                <span>
+                                    @conv.Messages.FirstOrDefault();
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <a href="" class="delete_chat_btn"></a>
+                </div>
+            </div>
+        }
+
+     
+
+    </div>
+
+</body>

@@ -1,0 +1,155 @@
+﻿/* conversation style start code */
+.wrap_conv {
+    background-color: rgba(143, 132, 93, 1);
+    padding-top: 5%;
+    padding-left: 5%;
+    padding-right: 5%;
+    padding-bottom: 5%;
+    border-radius: 8px;
+    margin-top: 2rem;
+    height: 450px;
+    /* width: 100%; */
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.content_conv_page {
+    padding-top: 5%;
+    padding-left: 25%;
+    padding-right: 25%;
+}
+
+header {
+    display: flex;
+    align-items: center;
+}
+
+.wrap_img_profile {
+    width: 75px;
+    height: 75px;
+    border: 2px solid black;
+    border-radius: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.profile_info {
+    display: flex;
+    flex-direction: column;
+    margin-left: 2rem;
+}
+
+.profile_name {
+    font-size: 21px;
+    font-weight: 300;
+}
+
+.profile_login {
+    font-size: 16px;
+    font-weight: 400;
+}
+
+.content_conv {
+    overflow-y: scroll;
+    height: 85%;
+}
+
+    .content_conv::-webkit-scrollbar {
+        width: 7px;
+    }
+
+    .content_conv::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .content_conv::-webkit-scrollbar-thumb {
+        background-color: #00000050;
+        border-radius: 20px;
+        border: 3px solid transparent;
+    }
+
+.wrap_auction_conv {
+    width: 270px;
+    border-radius: 20px;
+    display: flex;
+    justify-content: space-between;
+    padding-left: 2%;
+    padding-right: 2%;
+    padding-top: 1%;
+    padding-bottom: 1%;
+}
+
+    .wrap_auction_conv img {
+        width: 10px;
+        transform: rotate(180deg);
+    }
+
+.wrap_status_conv {
+    font-weight: 300;
+    font-size: 11px;
+    border-radius: 15px;
+    background-color: rgb(101, 180, 101);
+    text-align: center;
+    width: 80px;
+}
+
+.wrap_auction_conv {
+    background-color: #f5f5f5;
+}
+
+.wrap_msg_some {
+    background-color: #f5f5f5;
+    margin-top: 1rem;
+    border-radius: 30px;
+    padding-left: 20px;
+    padding-top: 10px;
+    padding-right: 10px;
+    padding-bottom: 10px;
+    width: 470px;
+    font-weight: 300;
+    font-size: 16px;
+}
+
+.wrap_msg_my {
+    background-color: #f5f5f5;
+    margin-top: 1rem;
+    border-radius: 30px;
+    padding-left: 20px;
+    padding-top: 10px;
+    padding-right: 10px;
+    padding-bottom: 10px;
+    width: 470px;
+    margin-left: auto;
+    margin-right: 10px;
+    font-weight: 300;
+    font-size: 16px;
+}
+
+.auction_info_conv {
+    display: flex;
+    flex-direction: column;
+}
+
+.wrap_my_message {
+    display: flex;
+    background-color: rgba(217, 217, 217, 1);
+    padding-left: 10px;
+    padding-top: 5px;
+    padding-right: 10px;
+    padding-bottom: 5px;
+    border-radius: 14px;
+}
+
+    .wrap_my_message input {
+        width: 100%;
+        background-color: rgba(217, 217, 217, 1);
+    }
+
+    .wrap_my_message img {
+        margin-left: 1%;
+        cursor: pointer;
+    }
+/* conversation style end code */

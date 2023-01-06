@@ -1,0 +1,62 @@
+﻿@model ConversationModel
+
+@{
+    ViewData["Title"] = $"Диалог с {23}";
+}
+
+
+<head>
+    <link rel="stylesheet" href="~/css/ConversationStyle.css">
+</head>
+
+<body>
+    <div class="content_conv_page">
+        <header>
+            <div class="wrap_img_profile">
+                <img src="" alt="Ава">
+            </div>
+            <div class="profile_info">
+                <span class="profile_name">@Model.UserReceiver.FirstName + " " + @Model.UserReceiver.SecondName</span>
+                <a class="profile_login" asp-controller="Account" asp-action="GetUserProfile" asp-route-idUser="@Model.UserReceiver.IdUser">@Model.UserReceiver.IdUser</a>
+            </div>
+
+        </header>
+
+        <div class="wrap_conv">
+
+            <div class="content_conv">
+
+
+                <div class="wrap_auction_conv">
+                    <div class="auction_info_conv">
+                        <div class="wrap_status_conv">
+                            <span>Идёт аукцион</span>
+                        </div>
+                        <span>Монтаж свай</span>
+                    </div>
+
+                    <img src="./img/Vector1.svg" alt="">
+                </div>
+
+                @foreach(var message in Model.Messages)
+                {
+                        <div class="wrap_msg_some">
+                            <span>@message.Text</span>
+                        </div>
+                }
+
+                
+@*
+                <div class="wrap_msg_my">
+                    <span>Приветствую, 20+ постоянных клиентов, более 500 положительных отзывов о нашей работе</span>
+                </div>*@
+
+            </div>
+
+            <form class="wrap_my_message">
+                <input type="text" placeholder="Введите сообщение">
+                <input type="submit" value=""><img src="./img/ic_outline-email.svg" alt="">
+            </form>
+        </div>
+    </div>
+</body>
