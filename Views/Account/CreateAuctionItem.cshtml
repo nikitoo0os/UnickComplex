@@ -41,7 +41,7 @@
                     </select>
 
                     
-                    <input type="file" name="прикрепить файлы" class="auction_file_btn" asp-page-handler="Upload">
+                    <input asp-for="FileModel.File" name="прикрепить файлы" class="auction_file_btn" accept="image/jpg,image/jpeg">
                    
 
                     <input type="text" id="" placeholder="Начальная цена" class="auction_start_price_input" asp-for="StartPrice">

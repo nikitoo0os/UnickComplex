@@ -1,0 +1,23 @@
+﻿@model CategoryModel
+
+@{
+    ViewData["Title"] = "Категории";
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Популярные категории</th>
+        </tr>
+    </thead>
+    <tbody>
+
+            @foreach (var category in Model.Categories)
+            {
+                <tr>
+                    <td><a asp-controller="Account" asp-action="GetCategory" asp-route-category="@category">@category</a></td>
+                </tr>
+            }
+
+    </tbody>
+</table>

@@ -345,6 +345,8 @@ public partial class UnickDbContext : DbContext
             entity.Property(e => e.Text)
                 .HasMaxLength(1000)
                 .HasColumnName("text");
+            entity.Property(e => e.idSender).HasColumnName("id_sender");
+            
 
             entity.HasOne(d => d.IdConversationNavigation).WithMany(p => p.Messages)
                 .HasForeignKey(d => d.IdConversation)

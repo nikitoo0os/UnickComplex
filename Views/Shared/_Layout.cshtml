@@ -17,10 +17,10 @@
                     <ul class="navbar_menu">
 
                         <li><a asp-controller="Account" asp-action="GetTrandAuctionItems">Подборки</a></li>
-                        <li>@Html.ActionLink("Интересное","RecomendationAuctions")</li>
-                        <li>@Html.ActionLink("Категории","CategoryAuctions")</li>
-                        <li>@Html.ActionLink("Стандарты","StandartAuctions")</li>
-                        <li>@Html.ActionLink("Поддержка","Support")</li>
+@*                        <li>@Html.ActionLink("Интересное","RecomendationAuctions")</li>*@
+                        <li><a asp-controller="Account" asp-action="GetCategories">Категории</a></li>
+@*                        <li>@Html.ActionLink("Стандарты","StandartAuctions")</li>
+                        <li>@Html.ActionLink("Поддержка","Support")</li>*@
       
                     </ul>
                 </div>
@@ -41,7 +41,7 @@
         </main>
     </div>
 
-    <footer>
+    @*<footer>
         <table>
             <tbody>
                 <tr>
@@ -87,7 +87,7 @@
                 </tr>
             </tbody>
         </table>
-    </footer>
+    </footer>*@
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
 

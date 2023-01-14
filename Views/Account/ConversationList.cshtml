@@ -5,14 +5,14 @@
 }
 
 <head>
-    <link rel="stylesheet" href="./css/ConversationListStyle.css">
+    <link rel="stylesheet" href="/css/ConversationListStyle.css">
 </head>
 
-<body class="conversation_list">
+<div class="conversation_list">
 
-    <header class="conversation_list">
+    <div class="conversation_listt">
         <span>Диалоги</span>
-    </header>
+    </div>
 
     <div class="conversation_list_content">
 
@@ -27,15 +27,22 @@
                         </div>
 
                         <div class="message_info_chat">
-                            <span>@Model.personConversation[conv.IdUser]</span>
+                            @if (Model.personConversation.ContainsKey(conv.IdUser))
+                            {
+                                <span>@Model.personConversation[conv.IdUser]</span>
+                            }
+                            else
+                            {
+                                <span>@Model.personConversation[conv.IdUser1]</span>
+                            }
 
                             <div class="wrap_last_msg">
                                 <div class="wrap_notify_msg">
                                     1
                                 </div>
-                                <span>
-                                    @conv.Messages.FirstOrDefault();
-                                </span>
+                                <a asp-controller="Account" asp-action="GetConversation" asp-route-idConv="@conv.IdConversation">
+                                    @Model.lastMsg
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -49,4 +56,4 @@
 
     </div>
 
-</body>
+</div>

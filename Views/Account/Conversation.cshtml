@@ -1,33 +1,30 @@
 ﻿@model ConversationModel
 
 @{
-    ViewData["Title"] = $"Диалог с {23}";
+    ViewData["Title"] = "Диалог";
 }
 
 
-<head>
-    <link rel="stylesheet" href="~/css/ConversationStyle.css">
-</head>
-
-<body>
+<link rel="stylesheet" href="/css/ConversationStyle.css">
+    
     <div class="content_conv_page">
         <header>
             <div class="wrap_img_profile">
                 <img src="" alt="Ава">
             </div>
             <div class="profile_info">
-                <span class="profile_name">@Model.UserReceiver.FirstName + " " + @Model.UserReceiver.SecondName</span>
-                <a class="profile_login" asp-controller="Account" asp-action="GetUserProfile" asp-route-idUser="@Model.UserReceiver.IdUser">@Model.UserReceiver.IdUser</a>
+                <span class="profile_name">@Model.UserReceiver.FirstName @Model.UserReceiver.SecondName</span>
+                <a class="profile_login" asp-controller="Account" asp-action="GetUserProfile" asp-route-idUser="@Model.UserSender.IdUser">@Model.UserSender.IdUser</a>
             </div>
 
         </header>
 
         <div class="wrap_conv">
 
-            <div class="content_conv">
+            <div class="content_conv" id="content_conv">
 
 
-                <div class="wrap_auction_conv">
+                @*<div class="wrap_auction_conv">
                     <div class="auction_info_conv">
                         <div class="wrap_status_conv">
                             <span>Идёт аукцион</span>
@@ -36,27 +33,40 @@
                     </div>
 
                     <img src="./img/Vector1.svg" alt="">
-                </div>
-
+                </div>*@
+                
                 @foreach(var message in Model.Messages)
                 {
-                        <div class="wrap_msg_some">
-                            <span>@message.Text</span>
-                        </div>
+                @if (message.idSender == Model.UserReceiver.IdUser)
+                {
+                    <div class="wrap_msg_some">
+                        <span>@message.Text</span>
+                    </div>
+                }
+                else
+                {
+                    <div class="wrap_msg_my">
+                        <span>@message.Text</span>
+                    </div>
+                }
+               
                 }
 
                 
-@*
-                <div class="wrap_msg_my">
-                    <span>Приветствую, 20+ постоянных клиентов, более 500 положительных отзывов о нашей работе</span>
-                </div>*@
+
 
             </div>
-
-            <form class="wrap_my_message">
-                <input type="text" placeholder="Введите сообщение">
-                <input type="submit" value=""><img src="./img/ic_outline-email.svg" alt="">
+            
+            <form method="post" class="wrap_my_message" asp-controller="Account" asp-action="SendMessage">
+            <input asp-for="Text" type="text" placeholder="Введите сообщение" autocomplete="off" style="border: none; outline: none;">
+            <input asp-for="idSender" type="text" value="@Model.UserSender.IdUser" style="display:none">
+            <input asp-for="idConversation" type="text" value="@Model.idConversation" style="display:none">
+            <input type="submit" value="Отправить" style="border: none; outline: none;"><img src="./img/ic_outline-email.svg" alt="">
             </form>
         </div>
     </div>
-</body>
+
+<script>
+    var element = document.getElementById("content_conv");
+    element.scrollTop = element.scrollHeight;
+</script>

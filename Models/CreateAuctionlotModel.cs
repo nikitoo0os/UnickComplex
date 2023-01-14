@@ -1,17 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.Drawing.Imaging;
 
 namespace ComplexProject.Models
 {
     public class CreateAuctionlotModel : Controller
     {
-
-        public HttpContext HttpContext { get; set; }
-        public CreateAuctionlotModel(HttpContext httpContext)
-        {
-            HttpContext = httpContext;
-        }
-        public CreateAuctionlotModel() { }
-
         public string Category { get; set; } = null!;
 
         public decimal StartPrice { get; set; }
@@ -29,7 +22,7 @@ namespace ComplexProject.Models
         public string Title { get; set; } = null!;
         public string? Description { get; set   ; }
 
-        public IFormFile Image { get; set; }
+        public ImageModel FileModel { get; set; }
 
 
     }

@@ -2,12 +2,16 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Hosting.Internal;
+using Microsoft.Identity.Client;
 using NuGet.Protocol.Core.Types;
 using System;
 using System.IO.Pipelines;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -17,11 +21,12 @@ namespace ComplexProject.Controllers
     {
         // GET: Account/Create
         private readonly UnickDbContext _context;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public AccountController(UnickDbContext context)
+        public AccountController(UnickDbContext context, IWebHostEnvironment webHostEnvironment)
         {
             _context = context;
-            
+            _webHostEnvironment = webHostEnvironment;
         }
 
         // GET: Account
@@ -403,91 +408,86 @@ namespace ComplexProject.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> CreateAuctionLot([Bind] CreateAuctionlotModel createModel)
+        public async Task<IActionResult> CreateAuctionLot([Bind("Title,Description,AverageProfit,Category,StartPrice,EndPrice,Type,Location,FileModel")] CreateAuctionlotModel createModel)
         {
-            Auctionlot model = new Auctionlot();
-            model.Title = createModel.Title;
-            model.Description = createModel.Description;
-            model.AverageProfit = createModel.AverageProfit;
-            model.Category = createModel.Category;
-            model.StartPrice = createModel.StartPrice;
-            model.EndPrice = createModel.EndPrice;
-            model.Type= createModel.Type;
-            model.Location = createModel.Location;
-                
-
-            model.IdAuctioneer = Convert.ToInt32(HttpContext.Request.Cookies["Unick_User_ID"]);
-            model.AttachmentsLink = new string[]
-            {
-                "eflpskodgrjtf"
-            };
-            model.Status = "На проверке";
-            model.Winner = "";
-
-            var image = createModel.Image;
-            if(image != null)
-            {
-               
-                var filePath = Path.GetTempFileName();
-
-
-                if (image.Length > 0)
-                    {
-                        using (var stream = new FileStream("~/wwwroot/img", FileMode.Create))
-                        {
-                            await image.CopyToAsync(stream);
-                        }
-                    }
-               
-            }
-
-
-            model.ImageLink = new string[]
-            {
-                "jrigthjfk"
-            };
-
-            var user = _context.Users
-               .FirstOrDefault(m => m.IdUser == Convert.ToInt32(HttpContext.Request.Cookies["Unick_User_ID"]));
-            var wallet = _context.Wallets
-                .FirstOrDefault(m => m.IdUser == user.IdUser);
-            var auctionLots = _context.Auctionlots.Where(m => m.IdAuctioneer == user.IdUser);
-
-
-
-
-            user.Auctionlots.Add(model);
-            await CreateTag(model.Category);
-
             if (!ModelState.IsValid)
-            {                
+            {
+                Auctionlot model = new Auctionlot();
+                model.Title = createModel.Title;
+                model.Description = createModel.Description;
+                model.AverageProfit = createModel.AverageProfit;
+                model.Category = createModel.Category;
+                model.StartPrice = createModel.StartPrice;
+                model.EndPrice = createModel.EndPrice;
+                model.Type = createModel.Type;
+                model.Location = createModel.Location;
+                model.IdAuctioneer = Convert.ToInt32(HttpContext.Request.Cookies["Unick_User_ID"]);
+                model.Status = "На проверке";
+                model.Winner = "";
+                model.AttachmentsLink = new string[]{ " "};
+                model.ImageLink = new string[] { " " };
 
-                await _context.SaveChangesAsync();
-
-                var curLot = _context.Auctionlots
-                    .LastOrDefault(m => m.IdAuctioneer == user.IdUser);
-
-                var curTag = await _context.Tags
-                    .FirstOrDefaultAsync(m => m.Name == model.Category);
-
-                curLot.Auctiontags.Add(new Auctiontag()
+                
+                if (createModel.FileModel == null)
                 {
-                    IdLot = curLot.IdLot,
-                    IdTag = curTag.IdTag
-                });
+                    var EntityModel = _context.Add(model);
+                    await _context.SaveChangesAsync();
 
-                await CreateActivity("Создание лота", curLot.IdLot, user.IdUser);
+                    long id = EntityModel.Entity.IdLot;
 
-                await _context.SaveChangesAsync();
+                    //string wwwrootpath = _webHostEnvironment.WebRootPath;
 
-                return View("Profile", new ProfileViewModel()
-                {
-                    User = user,
-                    Wallet = wallet,
-                    AuctionLot = auctionLots,
-                    IdProfile = user.IdUser
-                });
+                    //string SubDirPath = $"AuctionLot{id}";
+
+                    //DirectoryInfo directoryInfo = new DirectoryInfo(wwwrootpath + "/AuctionLots");
+                    //if (directoryInfo.Exists)
+                    //{
+                    //    directoryInfo.Create();
+                    //}
+
+                    //directoryInfo.CreateSubdirectory(SubDirPath);
+
+                    //string FileName = Path.GetFileNameWithoutExtension(createModel.FileModel.FileTitle);
+                    //string extension = Path.GetExtension(createModel.FileModel.FileTitle);
+
+                    //createModel.FileModel.FileTitle = FileName + id + extension;
+
+                    //var paths = _context.Auctionlots
+                    //    .FirstOrDefault(m => m.IdLot == id).AttachmentsLink
+                    //    .ToList();
+
+                    //paths.Add(createModel.FileModel.FileTitle);
+
+                    //model.AttachmentsLink = paths.ToArray();
+                    
+
+                    //string path = Path.Combine(wwwrootpath + "/AuctionLots/" + SubDirPath + "/" + createModel.FileModel.FileTitle);
+
+                    //using(var FileStream = new FileStream(path, FileMode.Create))
+                    //{
+                    //    await createModel.FileModel.File.CopyToAsync(FileStream);
+                    //}
+
+                    CreateActivity("Создание лота", id, model.IdAuctioneer);
+                    _context.Auctionlots.Update(model);
+                    await _context.SaveChangesAsync();
+
+                    return View("HomePage");
+                }
+
+                var user = await _context.Users
+                   .FirstOrDefaultAsync(m => m.IdUser == Convert.ToInt32(HttpContext.Request.Cookies["Unick_User_ID"]));
+                var wallet = await _context.Wallets
+                    .FirstOrDefaultAsync(m => m.IdUser == user.IdUser);
+                var auctionLots = _context.Auctionlots
+                    .Where(m => m.IdAuctioneer == user.IdUser);
+
+
+                user.Auctionlots.Add(model);
+                await CreateTag(model.Category);
             }
+            
+
 
             return Redirect("/");
         }
@@ -503,11 +503,13 @@ namespace ComplexProject.Controllers
 
         private async Task CreateTag(string name)
         {
-            var currTag = await _context.Tags.FirstOrDefaultAsync(m => m.Name == name);
+            var currTag = await _context.Tags
+                .FirstOrDefaultAsync(m => m.Name == name);
 
             if (currTag == null) {
                 _context.Tags.Add(new Tag(name));
             }
+            
         }
         private async Task CreateActivity(string type, long idLot, int idUser)
         {
@@ -729,37 +731,66 @@ namespace ComplexProject.Controllers
 
         public async Task<IActionResult> MyMessages()
         {
-            int idUser = HttpContext.Session.GetInt32("idUser") ?? 0;
+            //int idUser = HttpContext.Session.GetInt32("idUser") ?? 0;
+            int idUser = Convert.ToInt32(HttpContext.Request.Cookies["Unick_User_Id"]);
 
-            if(idUser != 0)
+
+            var userConversations = _context.Conversations
+                .Where(m => m.IdUser == idUser || m.IdUser1 == idUser)
+                .ToList();
+
+            ConversationsModel convModel = new ConversationsModel();
+            convModel.Conversations = userConversations;
+
+            foreach (var conv in userConversations)
             {
-                var userConversations = _context.Conversations
-                    .Where(m => m.IdUser == idUser)
-                    .OrderByDescending(m => m.IdConversation);
+                var user = _context.Users
+                    .FirstOrDefault(m => m.IdUser == conv.IdUser);
 
-                ConversationsModel convModel = new ConversationsModel();
-                convModel.Conversations = userConversations;
 
-                foreach(var conv in userConversations)
+                string fullName = user.FirstName + " " + user.SecondName;
+
+                if (!convModel.personConversation.ContainsKey(idUser))
                 {
-                    var user = await _context.Users
-                        .FirstOrDefaultAsync(m => m.IdUser == conv.IdUser);
-
-                    string fullName = user.FirstName + " " + user.SecondName;
-
                     convModel.personConversation.Add(idUser, fullName);
                 }
 
-                return View("ConversationList", convModel);
+                var messages = _context.Messages.Where(m => m.IdConversation == conv.IdConversation);
+
+
+                if(messages.Any())
+                {
+                    convModel.lastMsg = messages.OrderBy(m => m.IdMessage).ToList().Last().Text;
+                }
+                
             }
 
-            return View("ConversationList");
+            return View("ConversationList", convModel);
+
         }
 
         [HttpGet]
         public async Task<IActionResult> NewMessage(int idUser)
         {
-            int idSender = HttpContext.Session.GetInt32("IdUser") ?? 0;
+            //int idSender = HttpContext.Session.GetInt32("IdUser") ?? 0;
+            var idSender = Convert.ToInt32(HttpContext.Request.Cookies["Unick_User_ID"]);
+
+            Conversation conversation = new Conversation();
+            var curCov = await _context.Conversations
+                .FirstOrDefaultAsync(m => m.IdUser == idUser & m.IdUser1 == idSender || m.IdUser == idSender & m.IdUser1 == idUser);
+           
+            if(curCov != null)
+            {
+                conversation = curCov;
+            }
+            else
+            {
+                conversation.IdUser = idSender;
+                conversation.IdUser1 = idUser;
+
+                await _context.Conversations.AddAsync(conversation);
+                await _context.SaveChangesAsync();
+            }
 
             ConversationModel convModel = new ConversationModel();
 
@@ -769,17 +800,62 @@ namespace ComplexProject.Controllers
             convModel.UserReceiver = await _context.Users
                 .FirstOrDefaultAsync(m => m.IdUser == idUser);
 
-            var conv = await _context.Conversations
-                .FirstOrDefaultAsync(m => m.IdUser1 == idUser && m.IdUser == idSender);
-
             convModel.Messages = _context.Messages
-                .Where(m => m.IdConversation == conv.IdConversation);
+                .Where(m => m.IdConversation == curCov.IdConversation)
+                .ToList();            
+           
 
             return View("Conversation", convModel);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetConversation(int idConv)
+        {
+            var conversation = await _context.Conversations
+                .FirstOrDefaultAsync(m => m.IdConversation == idConv);
 
-        private async Task TransferMoney(decimal amount, string idSender, int idReceiver)
+            var messages = _context.Messages
+                .Where(m => m.IdConversation == idConv)
+                .OrderBy(m => m.IdMessage)
+                .ToList();
+
+            var user1 = await _context.Users
+                .FirstOrDefaultAsync(m => m.IdUser == conversation.IdUser);
+            var user2 = await _context.Users
+                .FirstOrDefaultAsync(m => m.IdUser == conversation.IdUser1);
+
+            ConversationModel convModel = new ConversationModel();
+            convModel.Messages = messages;
+            convModel.UserSender = user1;
+            convModel.UserReceiver = user2;
+            convModel.idConversation = Convert.ToInt32(conversation.IdConversation);
+
+            return View("Conversation", convModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SendMessage([Bind("idSender,idReceiver,Text,idConversation")]ConversationModel model)
+        {
+            var idSender = Convert.ToInt32(HttpContext.Request.Cookies["Unick_User_ID"]);
+
+            Message message = new Message();
+            message.Text = model.Text;
+            message.idSender = idSender;
+            message.IdConversation = model.idConversation;
+
+            await _context.Messages.AddAsync(message);
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch{ }
+
+            return Redirect($"GetConversation?idConv={model.idConversation}");
+             //GetConversation(model.idConversation);
+        }
+
+            private async Task TransferMoney(decimal amount, string idSender, int idReceiver)
         {
             var walletSender = await _context.Wallets
                 .FirstOrDefaultAsync(m => m.IdUser == Convert.ToInt32(idSender));
@@ -792,6 +868,37 @@ namespace ComplexProject.Controllers
                 walletReceiver.Balance += Convert.ToDouble(amount);
             }
 
+        }
+
+        public async Task<IActionResult> GetCategories()
+        {
+            CategoryModel categoryModel = new CategoryModel();
+
+            var popularTags = (from at in _context.Auctiontags
+                               join t in _context.Tags on at.IdTag equals t.IdTag
+                               group t by t.Name into g
+                               orderby g.Count() descending
+                               select g.Key).ToList();
+
+
+            categoryModel.Categories = popularTags;
+
+
+            return View("Category", categoryModel);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetCategory(string category)
+        {
+            var lots = _context.Auctionlots
+                .Where(m => m.Category == category)
+                .ToList();
+
+            TrandAuctionItemsModel model = new TrandAuctionItemsModel();
+            model.TrandAuctionLots = lots;
+            model.curTag.Add(category);
+
+            return View("TrandAuctionItems", model);
         }
     }
 }

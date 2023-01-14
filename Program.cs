@@ -1,5 +1,6 @@
 
 using ComplexProject;
+using ComplexProject.Controllers;
 using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,7 +14,17 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     options.SlidingExpiration = true;
     options.AccessDeniedPath = "";
 });
+
+////builder.Services.AddSignalR();
+//builder.Services.AddSession();
+
+
+builder.Services.AddControllersWithViews();
+builder.Services.AddSignalR();
+builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession();
+builder.Services.AddRazorPages();
+
 var app = builder.Build();
 
 
@@ -28,11 +39,15 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
+app.UseSession();
 app.UseRouting();
+
+
+app.MapHub<ChatHub>("/chat");
 
 app.UseAuthorization();
 
-app.UseSession();
+
 
 app.MapControllerRoute(
     name: "default",

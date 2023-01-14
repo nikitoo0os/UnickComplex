@@ -14,7 +14,7 @@
                     <span>Уникальная подборка</span>
                 </div>
                 <div class="favourite_tags">
-                    <span>избранные теги: #строительство #монтаж #электромонтаж #отделка #сваи</span>
+                    <span>избранные теги: @foreach(var tag in Model.curTag){<span>#@tag</span>}</span>
                 </div>
             </header>
 
