@@ -97,7 +97,7 @@
                                         Последнее изменение: вчера
                                     </span>
                                 </div>
-                                <a asp-controller="Account" asp-action="GetAuctionItem" asp-route-id=@auctionItem.IdLot class="go_btn"><img src="/img/Vector1.svg" alt=""></a>
+                                <a asp-controller="Auction" asp-action="GetAuctionItem" asp-route-id=@auctionItem.IdLot class="go_btn"><img src="/img/Vector1.svg" alt=""></a>
                             </div>
                         }
                     }            
@@ -105,7 +105,7 @@
                     if(Model.IdProfile == Model.User.IdUser)
                     {
                         <div class="wrap_create_auction_item_btn">
-                            <a asp-area="Account" asp-action="CreateAuctionItem">+</a>
+                            <a asp-controller="Auction" asp-action="CreateAuctionItem">+</a>
                         </div>
                     }
                 }

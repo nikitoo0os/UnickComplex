@@ -38,13 +38,13 @@
                     <!-- spinner start code -->
 
                     <div class="wrap_bid_button">
-                        <a class="accept_auction_item_btn" asp-controller="Account" asp-action="ChangeStatusToReady" asp-route-idLot=@Model.AuctionLot.IdLot>
+                        <a class="accept_auction_item_btn" asp-controller="Admin" asp-action="ChangeStatusToReady" asp-route-idLot=@Model.AuctionLot.IdLot>
                             Принять
                         </a>
 
                     </div>
 
-                    <div class="auction_follow_wrap"><a asp-controller="Account" asp-action="ChangeStatusToDiscard" asp-route-idLot=@Model.AuctionLot.IdLot>Отклонить</a></div>
+                    <div class="auction_follow_wrap"><a asp-controller="Admin" asp-action="ChangeStatusToDiscard" asp-route-idLot=@Model.AuctionLot.IdLot>Отклонить</a></div>
                 </div>
 
 

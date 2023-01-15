@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace ComplexProject;
+﻿namespace ComplexProject;
 
 public partial class Project
 {

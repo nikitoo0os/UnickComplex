@@ -202,7 +202,7 @@
                         var idLot = Model.AuctionLot.IdLot;
                     }
 
-                    <button type="submit" id="submit_bid_btn" asp-controller="Account" asp-action="Bid" asp-route-idUser=@idUser asp-route-idLot=@idLot asp-route-amount=@amount>Подтвердить</button>
+                    <button type="submit" id="submit_bid_btn" asp-controller="Auction" asp-action="Bid" asp-route-idUser=@idUser asp-route-idLot=@idLot asp-route-amount=@amount>Подтвердить</button>
                 </div>
             </form>
         </div>

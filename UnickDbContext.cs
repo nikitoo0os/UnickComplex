@@ -66,6 +66,7 @@ public partial class UnickDbContext : DbContext
             entity.Property(e => e.Type)
                 .HasMaxLength(50)
                 .HasColumnName("type");
+            entity.Property(e => e.Time).HasColumnName("time");
 
             entity.HasOne(d => d.IdLotNavigation).WithMany(p => p.Activities)
                 .HasForeignKey(d => d.IdLot)

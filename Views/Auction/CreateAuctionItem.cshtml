@@ -16,8 +16,7 @@
         <div class="create_auction_container">
             
           
-            <form class="create_auction_form" asp-controller="Account" asp-action="CreateAuctionLot" method="post" enctype="multipart/form-data">
-                
+            <form class="create_auction_form" asp-controller="Auction" asp-action="CreateAuctionLot" method="post" enctype="multipart/form-data">
                 <div class="auction_product_details_create_form">
                     <input type="text" placeholder="Категория" class="select_auction_input" asp-for="Category">
              
@@ -40,15 +39,10 @@
                         <option>Голландский</option>
                     </select>
 
-                    
                     <input asp-for="FileModel.File" name="прикрепить файлы" class="auction_file_btn" accept="image/jpg,image/jpeg">
-                   
-
                     <input type="text" id="" placeholder="Начальная цена" class="auction_start_price_input" asp-for="StartPrice">
                     <input type="text" id="" placeholder="Конечная цена" class="auction_end_price_input" asp-for="EndPrice">
-                    
                 </div>
-                
             </form>
             
         </div>

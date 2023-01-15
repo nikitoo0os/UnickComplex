@@ -13,6 +13,8 @@ public partial class Activity
 
     public string Type { get; set; } = null!;
 
+    public DateTime Time { get; set; }
+
     public virtual Auctionlot IdLotNavigation { get; set; } = null!;
 
     public virtual User IdUserNavigation { get; set; } = null!;

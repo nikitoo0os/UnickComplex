@@ -23,8 +23,6 @@ namespace ComplexProject.Models
         public string? Description { get; set   ; }
 
         public ImageModel FileModel { get; set; }
-
-
     }
     
     

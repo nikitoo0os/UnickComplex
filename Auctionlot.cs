@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace ComplexProject;
+﻿namespace ComplexProject;
 
 public partial class Auctionlot
 {
@@ -50,9 +47,4 @@ public partial class Auctionlot
 
     public virtual User? IdAuctioneerNavigation { get; set; }
 
-
-    public void SetStatus(string status)
-    {
-        Status = status;
-    }
 }
