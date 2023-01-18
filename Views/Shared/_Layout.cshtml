@@ -19,7 +19,7 @@
                         <li><a asp-controller="Auction" asp-action="GetTrandAuctionItems">Подборки</a></li>
 @*                        <li>@Html.ActionLink("Интересное","RecomendationAuctions")</li>*@
                         <li><a asp-controller="Account" asp-action="GetCategories">Категории</a></li>
-@*                        <li>@Html.ActionLink("Стандарты","StandartAuctions")</li>
+                        @*<li><a asp-controller="Home" asp-action="GetEx">Example</a></li>
                         <li>@Html.ActionLink("Поддержка","Support")</li>*@
       
                     </ul>
@@ -27,7 +27,7 @@
 
                 <div class="container_account">
                     <img src="./img/ei_search.svg" alt="" srcset="">
-                    <a id="my_account_btn" asp-controller="Account" asp-action="LoginWithCookies">MyUnick</a>
+                    <a id="my_account_btn" asp-controller="account" asp-action="get">MyUnick</a>
                     <div class="notify_wrap"></div>
                 </div>
 

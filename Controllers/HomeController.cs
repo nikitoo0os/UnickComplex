@@ -1,6 +1,4 @@
-﻿using ComplexProject.Models;
-using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace ComplexProject.Controllers;
 public class HomeController : Controller
@@ -11,12 +9,14 @@ public class HomeController : Controller
     {
         _logger = logger;
     }
-
     public IActionResult Index()
     {
         return View("HomePage");
     }
-
+    public IActionResult GetEx()
+    {
+        return View("Example");
+    }
     public IActionResult TrandAuctions()
     {
         return View("TrandAuctionsPage");
@@ -36,10 +36,6 @@ public class HomeController : Controller
     public IActionResult Support()
     {
         return View("StandartPage");
-    }
-    public IActionResult Registration()
-    {
-        return View("AuthPage");
     }
     public IActionResult Login()
     {

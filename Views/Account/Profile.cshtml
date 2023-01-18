@@ -14,7 +14,7 @@
 
         <div class="profile_wrap">
             <div class="avatar_img">
-                <img src="" alt="Ава">
+                <img src="@Model.User.PathImage" alt="" style="width: inherit; height:inherit; border-radius: 50%">
             </div>
             <div class="info_account">
 
@@ -34,7 +34,7 @@
             @if(Model.IdProfile == Model.User.IdUser)
             {
                 <div class="wrap_btns">
-                    <a asp-controller="Account" asp-action="MyMessages">Мои сообщения</a>
+                    <a asp-controller="Account" asp-action="MyMessages" style="margin-right: 10px;">Мои сообщения</a>
                     <div class="btn_edit_profile">
                         <a asp-controller="Account" asp-action="EditAccountProfile">Редактировать</a>
                     </div>
@@ -60,7 +60,7 @@
                     <span class="balance_user_wallet">Баланс: @Model.Wallet.Balance р.</span>
                     <span class="last_transaction_user_wallet">Последняя транзакция: вчера</span>
                 </div>
-                <a href="#"><img src="/img/Vector1.svg" alt=""></a>
+                <a asp-controller="wallet" asp-action="get" asp-route-id="@Model.User.IdUser"><img src="/img/Vector1.svg" alt=""></a>
             </div>
         </div>
 
@@ -97,7 +97,7 @@
                                         Последнее изменение: вчера
                                     </span>
                                 </div>
-                                <a asp-controller="Auction" asp-action="GetAuctionItem" asp-route-id=@auctionItem.IdLot class="go_btn"><img src="/img/Vector1.svg" alt=""></a>
+                                <a asp-controller="auction" asp-action="get" asp-route-id=@auctionItem.IdLot class="go_btn"><img src="/img/Vector1.svg" alt=""></a>
                             </div>
                         }
                     }            
@@ -105,7 +105,7 @@
                     if(Model.IdProfile == Model.User.IdUser)
                     {
                         <div class="wrap_create_auction_item_btn">
-                            <a asp-controller="Auction" asp-action="CreateAuctionItem">+</a>
+                            <a asp-controller="auction" asp-action="get">+</a>
                         </div>
                     }
                 }

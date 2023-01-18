@@ -16,16 +16,16 @@
         <div class="create_auction_container">
             
           
-            <form class="create_auction_form" asp-controller="Auction" asp-action="CreateAuctionLot" method="post" enctype="multipart/form-data">
+            <form class="create_auction_form" asp-controller="auction" asp-action="create" method="post" enctype="multipart/form-data">
                 <div class="auction_product_details_create_form">
-                    <input type="text" placeholder="Категория" class="select_auction_input" asp-for="Category">
+                    <input type="text" placeholder="Категория" class="select_auction_input" asp-for="Category" required>
              
-                    <input type="text" placeholder="Название" class="title_auction_input" asp-for="Title">
-                    <textarea cols="30" rows="10" placeholder="Описание" class="desc_auction_input" asp-for="Description"></textarea>
+                    <input type="text" placeholder="Название" class="title_auction_input" asp-for="Title" required>
+                    <textarea cols="30" rows="10" placeholder="Описание" class="desc_auction_input" asp-for="Description" required></textarea>
 
                     <div class="horizontal_input">
                         <input type="text" placeholder="Местоположение" class="location_auction_input" asp-for="Location">
-                        <input type="text" placeholder="Текущая доходность" class="profit_auction_input" asp-for="AverageProfit">
+                        <input type="text" placeholder="Текущая доходность" class="profit_auction_input" asp-for="AverageProfit" required>
                     </div>
 
                     <button type="submit" class="auction_create_form_btn">Создать</button>
@@ -39,13 +39,20 @@
                         <option>Голландский</option>
                     </select>
 
-                    <input asp-for="FileModel.File" name="прикрепить файлы" class="auction_file_btn" accept="image/jpg,image/jpeg">
-                    <input type="text" id="" placeholder="Начальная цена" class="auction_start_price_input" asp-for="StartPrice">
+                    <div class="form-group">
+@*                        <label asp-for="ImageModel.File"></label>*@
+                        <input asp-for="ImageModel.File" accept="image/jpg,image/jpeg" />
+                        <span asp-validation-for="ImageModel.File"></span>
+                    </div>
+
+                    @*<input type="file" name="прикрепить файлы" class="auction_file_btn" asp-for="ImageModel.File">*@
+                    <input type="text" id="" placeholder="Начальная цена" class="auction_start_price_input" asp-for="StartPrice" required>
                     <input type="text" id="" placeholder="Конечная цена" class="auction_end_price_input" asp-for="EndPrice">
                 </div>
             </form>
             
         </div>
     </div>
+
 
 </body>

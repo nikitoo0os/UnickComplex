@@ -1,12 +1,13 @@
 ﻿using ComplexProject.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 using System.Security.Cryptography;
 using System.Text;
 
 namespace ComplexProject.Controllers
 {
-    public class AccountController : Controller
+    public class AccountController : Controller, IController
     {
         private readonly UnickDbContext _context;
         private readonly IWebHostEnvironment _webHostEnvironment;
@@ -15,6 +16,24 @@ namespace ComplexProject.Controllers
         {
             _context = context;
             _webHostEnvironment = webHostEnvironment;
+        }
+
+        public Task Registration()
+        {
+            if(HttpContext.Request.Cookies["Unick_User_Id"] != null)
+            {
+                return LoginWithCookies();
+            }
+            else
+            {
+                return GetAuthPage();
+            }
+            
+        }
+
+        public async Task<IActionResult> GetAuthPage()
+        {
+            return View("AuthPage");
         }
 
         [HttpPost]
@@ -62,28 +81,62 @@ namespace ComplexProject.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit([Bind("FirstName,SecondName,DateOfBirth")] User model)
+        public async Task<IActionResult> Edit([Bind("User,ImageModel")] ProfileViewModel profileModel)
         {
-
             var idUser = Convert.ToInt32(HttpContext.Request.Cookies["Unick_User_Id"]);
 
             var user = await _context.Users
                 .FirstOrDefaultAsync(m => m.IdUser == idUser);
 
-            user.FirstName = model.FirstName;
-            user.SecondName = model.SecondName;
-            user.DateOfBirth = model.DateOfBirth;
+            user.FirstName = profileModel.User.FirstName;
+            user.SecondName = profileModel.User.SecondName;
+            user.DateOfBirth = profileModel.User.DateOfBirth;
+
+            if (profileModel.ImageModel != null)
+            {
+                long id = idUser;
+
+                string wwwrootpath = _webHostEnvironment.WebRootPath;
+
+                string SubDirPath = $"User{id}";
+
+                DirectoryInfo directoryInfo = new DirectoryInfo(wwwrootpath + "/User");
+                if (directoryInfo.Exists) directoryInfo.Create();
+
+                directoryInfo.CreateSubdirectory(SubDirPath);
+
+                string FileName = profileModel.ImageModel.File.FileName;
+                int length = FileName.Length - 4;
+                string extension = FileName.Substring(length, 4);
+                string fileNameWithoutExtension = FileName.Substring(0, length);
+
+                profileModel.ImageModel.Title = fileNameWithoutExtension + id + extension;
+
+                string newPath = "/User/" + SubDirPath + "/" + profileModel.ImageModel.Title;
+
+                string path = Path
+                    .Combine(wwwrootpath + newPath);
+
+                string sourceFile = "createModel.ImageModel.Title";
+
+                using (var FileStream = new FileStream(path, FileMode.Create))
+                {
+                    await profileModel.ImageModel.File.CopyToAsync(FileStream);
+                }
+
+                user.PathImage = newPath;
+                
+            }
+
             _context.Update(user);
             try
             {
                 await _context.SaveChangesAsync();
             }
             catch { }
-            
 
             ProfileViewModel profile = new ProfileViewModel();
             profile.User = user;
-
 
             return Redirect("/Account/LoginWithCookies");
         }
@@ -120,21 +173,22 @@ namespace ComplexProject.Controllers
                         Wallet = wallet,
                         AuctionLot = auctionLots
                     });
-
                 }
                 catch
                 {
                     return View("AuthPageErr");
                 }
-
-
-                //return View("HomePage");
             }
             return View("HomePage");
         }
         private User userSession;
         public async Task<IActionResult> LoginWithCookies()
         {
+            if (HttpContext.Request.Cookies["Unick_User_Id"] == null)
+            {
+                return View("AuthPage");
+            }
+
             int id = Convert.ToInt32(HttpContext.Request.Cookies["Unick_User_ID"]);
             HttpContext.Session.SetInt32("idUser", id);
             var token = HttpContext.Request.Cookies["Unick_User_Token"];
@@ -158,9 +212,6 @@ namespace ComplexProject.Controllers
                 var wallet1 = await _context.Wallets
                     .FirstOrDefaultAsync(m => m.IdUser == id);
 
-                //var auctionslots = await _context.Auctionlots
-                //    .FirstOrDefaultAsync(m => m.IdAuctioneer == id);
-
                 var auctionLots = _context.Auctionlots.Where(m => m.IdAuctioneer == id);
 
                 if (userSession != null && wallet1 != null)
@@ -173,21 +224,15 @@ namespace ComplexProject.Controllers
                         IdProfile = userSession.IdUser
                     };
                 }
-
-
                 return View("Profile", pvm);
-
             }
             return View("LoginPage");
         }
-
-
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login([Bind("Login,Password")] LoginViewModel model)
         {
-
             if (model.Login != null && model.Password != null)
             {
                 userSession = await _context.Users
@@ -235,7 +280,6 @@ namespace ComplexProject.Controllers
                 }
             }
 
-
             return View("AuthPageErr");
         }
 
@@ -245,7 +289,6 @@ namespace ComplexProject.Controllers
             DeleteCookie("Unick_Auth_User");
             HttpContext.Session.Clear();
 
-
             return Redirect("/");
         }
 
@@ -254,7 +297,10 @@ namespace ComplexProject.Controllers
             var user = _context.Users
                .FirstOrDefault(m => m.IdUser == Convert.ToInt32(HttpContext.Request.Cookies["Unick_User_ID"]));
 
-            return View("EditProfile", user);
+            return View("EditProfile", new ProfileViewModel()
+            {
+                User = user
+            });
         }
 
         public static String sha256_hash(String value)
@@ -273,7 +319,7 @@ namespace ComplexProject.Controllers
         public IActionResult CreateCookie(string key, string value)
         {
             CookieOptions cookieOptions = new();
-            cookieOptions.Expires = DateTime.Now.AddDays(15);
+            cookieOptions.Expires = DateTime.Now.AddDays(14);
             Response.Cookies.Append(key, value, cookieOptions);
 
             return View("HomePage");
@@ -282,16 +328,38 @@ namespace ComplexProject.Controllers
         {
             Response.Cookies.Delete(key);
         }
+        public async Task<IActionResult> get(int? id)
+        { 
+            int? temp = Convert.ToInt32(HttpContext.Request.Cookies["Unick_User_ID"]);
 
-        private string GetUniqueFileName(string fileName)
-        {
-            fileName = Path.GetFileName(fileName);
-            return Path.GetFileNameWithoutExtension(fileName)
-                      + "_"
-                      + Guid.NewGuid().ToString().Substring(0, 4)
-                      + Path.GetExtension(fileName);
+            if (temp != null && temp != 0)
+            {
+                id = temp;
+            }
+            else
+            {
+                return View("AuthPage");
+            }
+            
+            var user = await _context.Users
+                .FirstOrDefaultAsync(m => m.IdUser == id);
+
+            var wallet = await _context.Wallets
+                .FirstOrDefaultAsync(m => m.IdUser == id);
+
+            var auctionLots = _context.Auctionlots
+                .Where(m => m.IdAuctioneer == id);
+
+            var idProfile = Convert.ToInt32(HttpContext.Request.Cookies["Unick_User_ID"]);
+
+            return View("Profile", new ProfileViewModel()
+            {
+                User = user,
+                Wallet = wallet,
+                AuctionLot = auctionLots,
+                IdProfile = idProfile
+            });
         }
-
         public async Task<IActionResult> GetUserProfile(long idUser)
         {
             var user = await _context.Users
@@ -319,7 +387,6 @@ namespace ComplexProject.Controllers
             //int idUser = HttpContext.Session.GetInt32("idUser") ?? 0;
             int idUser = Convert.ToInt32(HttpContext.Request.Cookies["Unick_User_Id"]);
 
-
             var userConversations = _context.Conversations
                 .Where(m => m.IdUser == idUser || m.IdUser1 == idUser)
                 .ToList();
@@ -332,32 +399,24 @@ namespace ComplexProject.Controllers
                 var user = _context.Users
                     .FirstOrDefault(m => m.IdUser == conv.IdUser);
 
-
                 string fullName = user.FirstName + " " + user.SecondName;
 
                 if (!convModel.personConversation.ContainsKey(idUser))
-                {
                     convModel.personConversation.Add(idUser, fullName);
-                }
-
+                
                 var messages = _context.Messages.Where(m => m.IdConversation == conv.IdConversation);
-
 
                 if(messages.Any())
                 {
                     convModel.lastMsg = messages.OrderBy(m => m.IdMessage).ToList().Last().Text;
-                }
-                
+                }  
             }
-
             return View("ConversationList", convModel);
-
         }
 
         [HttpGet]
         public async Task<IActionResult> NewMessage(int idUser)
         {
-            //int idSender = HttpContext.Session.GetInt32("IdUser") ?? 0;
             var idSender = Convert.ToInt32(HttpContext.Request.Cookies["Unick_User_ID"]);
 
             Conversation conversation = new Conversation();
@@ -365,9 +424,8 @@ namespace ComplexProject.Controllers
                 .FirstOrDefaultAsync(m => m.IdUser == idUser & m.IdUser1 == idSender || m.IdUser == idSender & m.IdUser1 == idUser);
            
             if(curCov != null)
-            {
                 conversation = curCov;
-            }
+            
             else
             {
                 conversation.IdUser = idSender;
@@ -379,17 +437,13 @@ namespace ComplexProject.Controllers
 
             ConversationModel convModel = new ConversationModel();
 
-            convModel.UserSender = await _context.Users
-                .FirstOrDefaultAsync(m => m.IdUser == idSender);
+            convModel.UserSender = await _context.Users.FirstOrDefaultAsync(m => m.IdUser == idSender);
 
-            convModel.UserReceiver = await _context.Users
-                .FirstOrDefaultAsync(m => m.IdUser == idUser);
+            convModel.UserReceiver = await _context.Users.FirstOrDefaultAsync(m => m.IdUser == idUser);
 
             convModel.Messages = _context.Messages
-                .Where(m => m.IdConversation == curCov.IdConversation)
-                .ToList();            
+                .Where(m => m.IdConversation == curCov.IdConversation).ToList();            
            
-
             return View("Conversation", convModel);
         }
 
@@ -404,10 +458,8 @@ namespace ComplexProject.Controllers
                 .OrderBy(m => m.IdMessage)
                 .ToList();
 
-            var user1 = await _context.Users
-                .FirstOrDefaultAsync(m => m.IdUser == conversation.IdUser);
-            var user2 = await _context.Users
-                .FirstOrDefaultAsync(m => m.IdUser == conversation.IdUser1);
+            var user1 = await _context.Users.FirstOrDefaultAsync(m => m.IdUser == conversation.IdUser);
+            var user2 = await _context.Users.FirstOrDefaultAsync(m => m.IdUser == conversation.IdUser1);
 
             ConversationModel convModel = new ConversationModel();
             convModel.Messages = messages;
@@ -449,9 +501,7 @@ namespace ComplexProject.Controllers
                                orderby g.Count() descending
                                select g.Key).ToList();
 
-
             categoryModel.Categories = popularTags;
-
 
             return View("Category", categoryModel);
         }
@@ -469,5 +519,7 @@ namespace ComplexProject.Controllers
 
             return View("TrandAuctionItems", model);
         }
+
+        
     }
 }

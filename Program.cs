@@ -43,8 +43,6 @@ app.UseSession();
 app.UseRouting();
 
 
-app.MapHub<ChatHub>("/chat");
-
 app.UseAuthorization();
 
 

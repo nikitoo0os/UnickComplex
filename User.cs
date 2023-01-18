@@ -28,6 +28,7 @@ public partial class User
     public DateOnly DateOfRegistration { get; set; }
 
     public string Role { get; set; } = "user";
+    public string? PathImage { get; set; }
 
     public virtual ICollection<Activity> Activities { get; } = new List<Activity>();
 

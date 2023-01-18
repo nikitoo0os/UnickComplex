@@ -3,15 +3,16 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Reflection.PortableExecutable;
 
 namespace ComplexProject.Controllers
 {
-    public class AuctionController : Controller
+    public class auctionController : Controller, IController
     {
         private readonly UnickDbContext _context;
         private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public AuctionController(UnickDbContext context, IWebHostEnvironment webHostEnvironment)
+        public auctionController(UnickDbContext context, IWebHostEnvironment webHostEnvironment)
         {
             _context = context;
             _webHostEnvironment = webHostEnvironment;
@@ -23,7 +24,7 @@ namespace ComplexProject.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateAuctionLot([Bind("Title,Description,AverageProfit,Category,StartPrice,EndPrice,Type,Location,FileModel")] CreateAuctionlotModel createModel)
+        public async Task<IActionResult> Create([Bind("Title,Description,AverageProfit,Category,StartPrice,EndPrice,Type,Location,ImageModel")] CreateAuctionlotModel createModel)
         {
             if (!ModelState.IsValid)
             {
@@ -39,75 +40,71 @@ namespace ComplexProject.Controllers
                 model.IdAuctioneer = Convert.ToInt32(HttpContext.Request.Cookies["Unick_User_ID"]);
                 model.Status = "На проверке";
                 model.Winner = "";
-                model.AttachmentsLink = new string[] { " " };
-                model.ImageLink = new string[] { " " };
+                model.AttachmentsLink = new string[] {};
+                model.ImageLink = new string[] {};
 
+                var EntityModel = _context.Add(model);
+                await _context.SaveChangesAsync();
+                long id = EntityModel.Entity.IdLot;
 
-                if (createModel.FileModel == null)
+                if (createModel.ImageModel != null)
                 {
-                    var EntityModel = _context.Add(model);
-                    await _context.SaveChangesAsync();
-
-                    long id = EntityModel.Entity.IdLot;
-
                     string wwwrootpath = _webHostEnvironment.WebRootPath;
 
                     string SubDirPath = $"AuctionLot{id}";
 
                     DirectoryInfo directoryInfo = new DirectoryInfo(wwwrootpath + "/AuctionLots");
-                    if (directoryInfo.Exists)
-                    {
-                        directoryInfo.Create();
-                    }
-
+                    if (directoryInfo.Exists) directoryInfo.Create();
+                   
                     directoryInfo.CreateSubdirectory(SubDirPath);
+                    
+                    string FileName = createModel.ImageModel.File.FileName;
+                    int length = FileName.Length - 4;
+                    string extension = FileName.Substring(length, 4);
+                    string fileNameWithoutExtension = FileName.Substring(0, length);
 
-                    string FileName = Path.GetFileNameWithoutExtension(createModel.FileModel.FileTitle);
-                    string extension = Path.GetExtension(createModel.FileModel.FileTitle);
+                    createModel.ImageModel.Title = fileNameWithoutExtension + id + extension;
 
-                    createModel.FileModel.FileTitle = FileName + id + extension;
+                    string newPath = "/AuctionLots/" + SubDirPath + "/" + createModel.ImageModel.Title;
+
+                    string path = Path
+                        .Combine(wwwrootpath + newPath);
+                
+                    string sourceFile = "createModel.ImageModel.Title";
+
+                    using (var FileStream = new FileStream(path, FileMode.Create))
+                    {
+                        await createModel.ImageModel.File.CopyToAsync(FileStream);
+                    }
 
                     var paths = _context.Auctionlots
                         .FirstOrDefault(m => m.IdLot == id).AttachmentsLink
                         .ToList();
 
-                    paths.Add(createModel.FileModel.FileTitle);
-
+                    paths.Add(newPath);
                     model.AttachmentsLink = paths.ToArray();
 
-
-                    string path = Path.Combine(wwwrootpath + "/AuctionLots/" + SubDirPath + "/" + createModel.FileModel.FileTitle);
-
-                    using (var FileStream = new FileStream(path, FileMode.Create))
-                    {
-                        await createModel.FileModel.File.CopyToAsync(FileStream);
-                    }
-                    await CreateActivity("Создание лота", id, model.IdAuctioneer);
                     _context.Auctionlots.Update(model);
-
-                    var user = await _context.Users
-                        .FirstOrDefaultAsync(m => m.IdUser == Convert.ToInt32(HttpContext.Request.Cookies["Unick_User_ID"]));
-                    
-                    user.Auctionlots.Add(model);
-                    await CreateTag(model.Category);
-
-                    await _context.SaveChangesAsync();
-
-                    return View("HomePage");
                 }
 
-               
-                //var wallet = await _context.Wallets
-                //    .FirstOrDefaultAsync(m => m.IdUser == user.IdUser);
-                //var auctionLots = _context.Auctionlots
-                //    .Where(m => m.IdAuctioneer == user.IdUser);   
-            }
+                var user = await _context.Users
+                    .FirstOrDefaultAsync(m => m.IdUser == Convert.ToInt32(HttpContext.Request.Cookies["Unick_User_ID"]));
+                
+                user.Auctionlots.Add(model);
+                await CreateTag(model.Category);
+                await CreateActivity("Создание лота", id, model.IdAuctioneer);
 
+                await _context.SaveChangesAsync();
+            }
             return Redirect("/");
         }
 
-        public async Task<IActionResult> GetAuctionItem(long id)
+        public async Task<IActionResult> get(int? id)
         {
+            if(id == null)
+            {
+                return View("createauctionitem");
+            }
 
             var idUser = Convert.ToInt32(HttpContext.Request.Cookies["Unick_User_ID"]);
 
@@ -120,12 +117,9 @@ namespace ComplexProject.Controllers
             var lotBids = _context.Bids
                 .Where(m => m.IdLot == id);
 
-
             if (lotBids.Any())
             {
-                Bid lastBids = lotBids
-                                .OrderBy(m => m.Price)
-                                .Last();
+                Bid lastBids = lotBids.OrderBy(m => m.Price).Last();
 
                 var currentDate = DateOnly.FromDateTime(DateTime.Now);
 
@@ -136,7 +130,6 @@ namespace ComplexProject.Controllers
                     auctionLot.Status = "Завершено";
 
                     await TransferMoney(auctionLot.EndPrice, Convert.ToInt32(auctionLot.Winner), auctionLot.IdAuctioneer);
-
                     await _context.SaveChangesAsync();
                 }
 
@@ -146,7 +139,6 @@ namespace ComplexProject.Controllers
                     Wallet = userWallet,
                     LastBid = lastBids,
                     IdProfile = idUser
-
                 });
             }
             else
@@ -162,54 +154,41 @@ namespace ComplexProject.Controllers
 
         public async Task<IActionResult> AdminGetAuctionItem(long idLot)
         {
-
             var idUser = Convert.ToInt32(HttpContext.Request.Cookies["Unick_User_ID"]);
 
-            var auctionLot = await _context.Auctionlots
-                .FirstOrDefaultAsync(m => m.IdLot == idLot);
+            var auctionLot = await _context.Auctionlots.FirstOrDefaultAsync(m => m.IdLot == idLot);
 
-            var userWallet = await _context.Wallets
-                .FirstOrDefaultAsync(m => m.IdUser == idUser);
-
+            var userWallet = await _context.Wallets.FirstOrDefaultAsync(m => m.IdUser == idUser);
 
             return View("AdminPanelAuctionItem", new AuctionLotModel()
             {
                 AuctionLot = auctionLot,
                 Wallet = userWallet
             });
-
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Bid(int idUser, long idLot, decimal amount)
         {
+            var auctionLot = await _context.Auctionlots.FirstOrDefaultAsync(m => m.IdLot == idLot);
 
-            var auctionLot = await _context.Auctionlots
-                .FirstOrDefaultAsync(m => m.IdLot == idLot);
-
-            var userWallet = await _context.Wallets
-                .FirstOrDefaultAsync(m => m.IdUser == idUser);
+            var userWallet = await _context.Wallets.FirstOrDefaultAsync(m => m.IdUser == idUser);
 
             bool valid = true;
 
             try
             {
-                var bids = _context.Bids
-                    .Where(m => m.IdLot == idLot);
+                var bids = _context.Bids.Where(m => m.IdLot == idLot);
 
-                var maxBid = bids
-                    .Max(m => m.Price);
+                var maxBid = bids.Max(m => m.Price);
 
-                if (amount <= maxBid || amount <= auctionLot.StartPrice) 
-                    valid = false;
+                if (amount <= maxBid || amount <= auctionLot.StartPrice) valid = false;
             }
             catch { }
 
-
             if (userWallet.Balance >= Convert.ToDouble(amount) && valid)
             {
-
                 if (amount >= auctionLot.EndPrice)
                 {
                     await SetWinner(auctionLot.IdLot, idUser);
@@ -231,7 +210,6 @@ namespace ComplexProject.Controllers
                 }
                 catch { }
             }
-
             await _context.SaveChangesAsync();
 
             return Redirect($"GetAuctionItem/{idLot}");
@@ -242,8 +220,7 @@ namespace ComplexProject.Controllers
         {
             const int PageSize = 3;
 
-            var lots = _context.Auctionlots
-                .Where(m => m.Status == "Идёт аукцион").ToList();
+            var lots = _context.Auctionlots.Where(m => m.Status == "Идёт аукцион").ToList();
 
             var count = lots.Count;
 
@@ -267,17 +244,26 @@ namespace ComplexProject.Controllers
             var walletReceiver = await _context.Wallets
                 .FirstOrDefaultAsync(m => m.IdUser == idReceiver);
 
+            Transaction transaction = new Transaction()
+            {
+                IdSender = idSender,
+                IdReceiver = idReceiver,
+                Quantity = amount
+            };
+            
+
             if (amount > 0)
             {
                 walletSender.Balance -= Convert.ToDouble(amount);
                 walletReceiver.Balance += Convert.ToDouble(amount);
             }
 
+            _context.Transactions.Add(transaction);
+            await _context.SaveChangesAsync();
         }
         private async Task SetWinner(long idLot, int idWinner)
         {
-            var auctionLot = await _context.Auctionlots
-                .FirstOrDefaultAsync(m => m.IdLot== idLot);
+            var auctionLot = await _context.Auctionlots.FirstOrDefaultAsync(m => m.IdLot== idLot);
             auctionLot.Winner = idWinner.ToString();
             auctionLot.Status = "Завершено";
 
@@ -289,14 +275,9 @@ namespace ComplexProject.Controllers
 
         private async Task CreateTag(string name)
         {
-            var currTag = await _context.Tags
-                .FirstOrDefaultAsync(m => m.Name == name);
+            var currTag = await _context.Tags.FirstOrDefaultAsync(m => m.Name == name);
 
-            if (currTag == null)
-            {
-                _context.Tags.Add(new Tag(name));
-            }
-
+            if (currTag == null) _context.Tags.Add(new Tag(name));
         }
         private async Task CreateActivity(string type, long idLot, int idUser)
         {

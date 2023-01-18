@@ -15,7 +15,7 @@
     <header class="auction_content">
         <div class="auction_header">
             <div class="prop_auction">
-                <img src="/img/image 4.svg" alt="" class="auction_img">
+                <img src="@Model.AuctionLot.AttachmentsLink[0]" alt="" class="auction_img">
 
                 <div class="wrap_prop">
                     <div class="wrap_status">
@@ -75,14 +75,14 @@
                                             else
                                             {
                                                 <span>Победитель:</span>
-                                                <a asp-controller="Account" asp-action="GetUserProfile" asp-route-idUser=@Model.AuctionLot.Winner>id: @Model.AuctionLot.Winner</a>
+                                                <a asp-controller="account" asp-action="get" asp-route-id=@Model.AuctionLot.Winner>id: @Model.AuctionLot.Winner</a>
                                             }
                                         }
 
                                     </span>
 
                                     <span class="auctioneer">
-                                        <a asp-controller="Account" asp-action="GetUserProfile" asp-route-idUser=@Model.AuctionLot.IdAuctioneer>Автор:@Model.AuctionLot.IdAuctioneer</a>
+                                        <a asp-controller="account" asp-action="get" asp-route-id=@Model.AuctionLot.IdAuctioneer>Автор:@Model.AuctionLot.IdAuctioneer</a>
                                     </span>
 
                                 </div>

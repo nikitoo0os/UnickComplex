@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using System.ComponentModel.DataAnnotations;
 using System.Drawing.Imaging;
 
 namespace ComplexProject.Models
@@ -22,7 +24,11 @@ namespace ComplexProject.Models
         public string Title { get; set; } = null!;
         public string? Description { get; set   ; }
 
-        public ImageModel FileModel { get; set; }
+        public string ImageURL { get; set; }
+
+        [Display(Name = "Картинка болга")]
+        [BindingBehavior(BindingBehavior.Optional)]
+        public ImageModel ImageModel { get; set; }
     }
     
     

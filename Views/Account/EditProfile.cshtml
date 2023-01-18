@@ -1,4 +1,4 @@
-@model User
+@model ProfileViewModel
 @{
     ViewData["Title"] = "Редактирование профиля";
 }
@@ -15,10 +15,16 @@
         </div>
         <div class="wrap_edit_profile_content">
 
-            <form method="post" class="edit_profile_form" asp-controller="Account" asp-action="Edit">
-                <input type="text" placeholder="Фамилия" value=@Model.SecondName asp-for="SecondName" required>
-                <input type="text" placeholder="Имя" value=@Model.FirstName asp-for="FirstName" required>
-                <input type="date" value="2011-11-11" asp-for="DateOfBirth" required>
+            <form method="post" class="edit_profile_form" asp-controller="Account" asp-action="Edit" enctype="multipart/form-data">
+                <input type="text" placeholder="Фамилия" value=@Model.User.SecondName asp-for="User.SecondName" required>
+                <input type="text" placeholder="Имя" value=@Model.User.FirstName asp-for="User.FirstName" required>
+                
+                <div class="form-group">
+                    <input asp-for="ImageModel.File" accept="image/jpg,image/jpeg" />
+                    <span asp-validation-for="ImageModel.File"></span>
+                </div>
+
+                <input type="date" value="2011-11-11" asp-for="User.DateOfBirth" required>
                 <div class="edit_profile_btns">
                     <a><button type="submit">Изменить</button></a>
                     <a href="#" class="edit_profile_form_changepass_btn">Сменить пароль</a>

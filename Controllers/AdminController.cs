@@ -22,8 +22,7 @@ namespace ComplexProject.Controllers
 
             var idUser = Convert.ToInt32(HttpContext.Request.Cookies["Unick_User_ID"]);
 
-            userSession = await _context.Users
-                .FirstOrDefaultAsync(m => m.IdUser == idUser);
+            userSession = await _context.Users.FirstOrDefaultAsync(m => m.IdUser == idUser);
 
             auctionLot.Status = "Идёт аукцион";
             auctionLot.StartDate = DateOnly.FromDateTime(DateTime.Now);
@@ -39,8 +38,7 @@ namespace ComplexProject.Controllers
         }
         public async Task<IActionResult> ChangeStatusToDiscard(int idLot)
         {
-            var auctionLot = await _context.Auctionlots
-                .FirstOrDefaultAsync(m => m.IdLot == idLot);
+            var auctionLot = await _context.Auctionlots.FirstOrDefaultAsync(m => m.IdLot == idLot);
 
             auctionLot.Status = "Отказ";
 

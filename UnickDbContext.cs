@@ -450,6 +450,8 @@ public partial class UnickDbContext : DbContext
                 .HasColumnName("second_name");
             entity.Property(e => e.Role)
                 .HasColumnName("role");
+            entity.Property(e => e.PathImage)
+                .HasColumnName("path_image");
         });
 
         modelBuilder.Entity<Wallet>(entity =>
